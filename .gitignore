@@ -1,0 +1,8 @@
+node_modules
+dist
+.DS_Store
+*.local
+html/_unz1
+html/_unz2
+html/
+*.tsbuildinfo

@@ -1,0 +1,205 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+
+  --color-ink: #07090c;
+  --color-navy: #0b1220;
+  --color-teal-deep: #0d2622;
+  --color-paper: #eef1f5;
+  --color-fog: #f4f5f7;
+  --color-blue: #2f5bd6;
+  --color-sky: #b9d4ff;
+  --color-mint: #7ee0b0;
+  --color-teal: #1f8f78;
+  --color-slate: #4a5568;
+  --color-slate-2: #3d4757;
+
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.25rem;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    color: var(--color-fog);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  input, textarea, select, button { font: inherit; }
+
+  ::selection { background: rgba(126, 224, 176, 0.35); color: #fff; }
+
+  /* Barra de rolagem fina e escura (Chrome/Edge/Safari) */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-ink); }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
+
+  /* Firefox — só aqui, porque no Chrome `scrollbar-width` desliga o estilo acima */
+  @supports (-moz-appearance: none) {
+    html { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.22) var(--color-ink); }
+  }
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+@utility glass-strong {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@utility glass-light {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 60px rgba(11, 18, 32, 0.08);
+}
+
+@utility serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+@utility container-site {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility text-pretty {
+  text-wrap: pretty;
+}
+
+/* Cartão de serviço: holofote que segue o cursor (vars setadas por JS). */
+@utility spotlight {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(360px circle at var(--mx) var(--my), var(--spot, rgba(185, 212, 255, 0.16)), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  z-index: -1;
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* Brilho de borda que segue o cursor (CursorGlow), estilo botão "Modo IA" do
+   Google: só um anel fino colado na borda, com as cores concentradas num arco
+   curto perto do cursor. Nada se espalha para fora do botão. A máscara exclui o
+   content-box, então nada cobre o texto. --mx/--my vêm do JS, relativos ao botão. */
+.cursor-glow {
+  --mx: 50%;
+  --my: 50%;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+/* a opacidade fica nos pseudo-elementos: transicionar no pai com mask dentro
+   fazia o Chrome não repintar o anel */
+.cursor-glow::before,
+.cursor-glow::after {
+  content: '';
+  position: absolute;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  will-change: opacity;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+/* anel de 1.5px: as cores só aparecem num arco curto ao redor do cursor */
+.cursor-glow::before {
+  inset: -1.5px;
+  padding: 1.5px;
+  background: radial-gradient(
+    70px circle at calc(var(--mx) + 1.5px) calc(var(--my) + 1.5px),
+    #7ee0b0 0%,
+    #b9d4ff 35%,
+    #2f5bd6 60%,
+    transparent 100%
+  );
+}
+/* leve suavização do anel (2px pra fora, blur mínimo), sem halo grande */
+.cursor-glow::after {
+  inset: -3px;
+  padding: 3px;
+  filter: blur(1.5px);
+  background: radial-gradient(
+    60px circle at calc(var(--mx) + 3px) calc(var(--my) + 3px),
+    rgba(126, 224, 176, 0.55) 0%,
+    rgba(185, 212, 255, 0.35) 45%,
+    transparent 80%
+  );
+}
+:hover > .cursor-glow::before,
+:hover > .cursor-glow::after { opacity: 1; }
+
+/* Linhas de SplitText com máscara: o wrapper tem overflow clip, então com
+   line-height apertado ele cortaria descendentes (g, ç) e acentos. A folga
+   de padding é compensada por margem negativa para o layout não mudar. */
+.split-line { display: block; }
+.split-line-mask {
+  padding: 0.1em 0 0.16em;
+  margin: -0.1em 0 -0.16em;
+}
+
+/* Esconde o conteúdo até o GSAP assumir (evita flash antes do preloader). */
+[data-intro] { visibility: hidden; }
+
+/* "Como funciona" no desktop: área pinada, painéis absolutos que entram pela direita.
+   Cada painel i começa depois das i faixas (64px) dos passos anteriores. */
+.steps[data-mode='horizontal'] {
+  --tab: 64px;
+  height: 100vh;
+  overflow: hidden;
+}
+.steps[data-mode='horizontal'] .panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--i) * var(--tab));
+  width: calc(100% - var(--i) * var(--tab));
+  overflow: hidden; /* o conteúdo que desliza ao ser coberto não vaza pro painel anterior */
+}
+/* a faixa fica opaca e acima do conteúdo do próprio painel */
+.steps[data-mode='horizontal'] .panel-strip {
+  display: flex;
+  position: relative;
+  z-index: 1;
+}

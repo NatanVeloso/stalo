@@ -1,0 +1,202 @@
+import { useRef, useState, type MouseEvent } from 'react'
+import { gsap, useGSAP, ScrollTrigger, ScrollSmoother } from '../lib/gsap'
+import { nav, contact } from '../data/content'
+import { useLiquidGlass } from '../hooks/useLiquidGlass'
+import { Logo } from './Logo'
+import { CursorGlow } from './CursorGlow'
+
+type Props = { show: boolean }
+
+/** Rola até uma âncora usando o ScrollSmoother (ou nativo, se ele não existir). */
+export function scrollToAnchor(href: string) {
+  const smoother = ScrollSmoother.get()
+  if (smoother) smoother.scrollTo(href, true, 'top top')
+  else document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+}
+
+export function Header({ show }: Props) {
+  const root = useRef<HTMLElement>(null)
+  const pill = useRef<HTMLElement>(null)
+  const menu = useRef<HTMLDivElement>(null)
+  const glass = useLiquidGlass(pill)
+  const [active, setActive] = useState('')
+  const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  // entrada após o preloader
+  useGSAP(
+    () => {
+      if (!show) return
+      gsap.fromTo(root.current, { y: -40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2, delay: 0.1 })
+    },
+    { dependencies: [show], scope: root },
+  )
+
+  // estado "scrolled" + link ativo por section
+  useGSAP(() => {
+    ScrollTrigger.create({
+      start: 'top -80',
+      end: 'max',
+      onToggle: (self) => setScrolled(self.isActive),
+    })
+    nav.forEach(({ href }) => {
+      ScrollTrigger.create({
+        trigger: href,
+        start: 'top 45%',
+        end: 'bottom 45%',
+        onToggle: (self) => self.isActive && setActive(href),
+      })
+    })
+  })
+
+  // menu mobile
+  const { contextSafe } = useGSAP({ scope: menu })
+  const toggle = contextSafe((next: boolean) => {
+    setOpen(next)
+    const el = menu.current
+    if (!el) return
+    if (next) {
+      gsap.timeline()
+        .set(el, { display: 'flex' })
+        .fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' })
+        .fromTo('.menu-link', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.06, duration: 0.6 }, '-=0.2')
+    } else {
+      gsap.to(el, { autoAlpha: 0, duration: 0.3, ease: 'power2.in', onComplete: () => gsap.set(el, { display: 'none' }) })
+    }
+  })
+
+  const go = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault()
+    if (open) toggle(false)
+    scrollToAnchor(href)
+  }
+
+  return (
+    <>
+      <header
+        ref={root}
+        data-intro
+        className="fixed inset-x-0 top-4 z-[60] flex justify-center px-4"
+      >
+        <nav
+          ref={pill}
+          className={`container-site relative isolate flex items-center justify-between gap-4 rounded-full border border-white/[0.18] pl-5 pr-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),inset_0_-1px_0_rgba(255,255,255,0.08),inset_0_0_0_1px_rgba(255,255,255,0.06),0_10px_40px_rgba(0,0,0,0.3)] transition-[padding,background-color] duration-500 ${
+            glass ? '' : 'backdrop-blur-2xl backdrop-saturate-[180%]'
+          } ${
+            scrolled
+              ? glass ? 'bg-[rgba(10,13,20,0.55)] py-1.5' : 'bg-[rgba(10,13,20,0.78)] py-1.5'
+              : glass ? 'bg-[rgba(14,18,28,0.3)] py-2.5' : 'bg-[rgba(14,18,28,0.55)] py-2.5'
+          }`}
+        >
+          {/* liquid glass (Chromium): o fundo é refratado nas bordas da pílula por um feDisplacementMap */}
+          {glass && (
+            <>
+              <svg width="0" height="0" className="absolute" aria-hidden="true">
+                <defs>
+                  <filter
+                    id="liquid-nav"
+                    filterUnits="userSpaceOnUse"
+                    colorInterpolationFilters="sRGB"
+                    x="0"
+                    y="0"
+                    width={glass.width}
+                    height={glass.height}
+                  >
+                    <feImage href={glass.map} width={glass.width} height={glass.height} preserveAspectRatio="none" result="map" />
+                    {/* cada canal de cor é deslocado um pouco diferente → franja cromática sutil na borda */}
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale={glass.scale} xChannelSelector="R" yChannelSelector="G" result="dr" />
+                    <feColorMatrix in="dr" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r" />
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale={glass.scale * 0.88} xChannelSelector="R" yChannelSelector="G" result="dg" />
+                    <feColorMatrix in="dg" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g" />
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale={glass.scale * 0.76} xChannelSelector="R" yChannelSelector="G" result="db" />
+                    <feColorMatrix in="db" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b" />
+                    <feBlend in="r" in2="g" mode="screen" result="rg" />
+                    <feBlend in="rg" in2="b" mode="screen" />
+                  </filter>
+                </defs>
+              </svg>
+              <div
+                className="pointer-events-none absolute inset-0 -z-10 rounded-full"
+                style={{ backdropFilter: 'url(#liquid-nav) blur(3px) saturate(1.6) brightness(0.9)' }}
+              />
+              {/* reflexo na borda, como o vidro do iOS */}
+              <div className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-[linear-gradient(120deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0)_30%,rgba(255,255,255,0)_70%,rgba(255,255,255,0.1)_100%)]" />
+            </>
+          )}
+          <a href="#top" onClick={(e) => go(e, '#top')} className="flex items-center text-fog" aria-label="Início">
+            <Logo className="h-[26px] w-auto" />
+          </a>
+
+          <div className="hidden items-center gap-7 text-[15px] md:flex">
+            {nav.map(({ label, href }) => (
+              <a
+                key={href}
+                href={href}
+                onClick={(e) => go(e, href)}
+                className={`relative py-1 transition-colors duration-300 hover:text-sky ${
+                  active === href ? 'text-fog' : 'text-fog/75'
+                }`}
+              >
+                {label}
+                <span
+                  className={`absolute -bottom-0.5 left-0 h-px w-full origin-left bg-mint transition-transform duration-500 ${
+                    active === href ? 'scale-x-100' : 'scale-x-0'
+                  }`}
+                />
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <a
+              href={contact.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative hidden whitespace-nowrap rounded-full bg-fog px-5 py-2.5 text-sm font-semibold text-[#0a0a0a] transition-colors hover:bg-white sm:block"
+            >
+              Fale com um contador
+              <CursorGlow />
+            </a>
+            <button
+              type="button"
+              aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+              aria-expanded={open}
+              onClick={() => toggle(!open)}
+              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 md:hidden"
+            >
+              <span className={`absolute h-px w-4 bg-fog transition-transform duration-300 ${open ? 'rotate-45' : '-translate-y-1'}`} />
+              <span className={`absolute h-px w-4 bg-fog transition-transform duration-300 ${open ? '-rotate-45' : 'translate-y-1'}`} />
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {/* overlay mobile */}
+      <div
+        ref={menu}
+        className="fixed inset-0 z-[55] hidden flex-col items-center justify-center gap-6 bg-ink/80 backdrop-blur-2xl md:hidden"
+        style={{ display: 'none' }}
+      >
+        {nav.map(({ label, href }) => (
+          <a
+            key={href}
+            href={href}
+            onClick={(e) => go(e, href)}
+            className="menu-link text-[clamp(32px,9vw,44px)] font-medium tracking-[-0.03em] text-fog"
+          >
+            {label}
+          </a>
+        ))}
+        <a
+          href={contact.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => toggle(false)}
+          className="menu-link mt-4 rounded-full bg-fog px-7 py-4 text-base font-semibold text-[#0a0a0a]"
+        >
+          Fale com um contador
+        </a>
+      </div>
+    </>
+  )
+}
