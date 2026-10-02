@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { gsap, useGSAP, MOTION_OK } from '../lib/gsap'
+import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { values, stats, images } from '../data/content'
 import { StackSection } from './StackSection'
@@ -58,7 +58,7 @@ export function About() {
         })
       })
 
-      gsap.matchMedia().add(MOTION_OK, () => {
+      heavy(() => {
         // linha de crescimento desenhada no scroll
         gsap.from(q('.growth'), {
           drawSVG: '0%',

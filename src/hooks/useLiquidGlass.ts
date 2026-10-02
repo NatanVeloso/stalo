@@ -1,4 +1,5 @@
 import { useEffect, useState, type RefObject } from 'react'
+import { usePerfLite } from '../lib/perf'
 
 export type LiquidGlassMap = {
   width: number
@@ -84,9 +85,15 @@ function buildMap(width: number, height: number, band: number, strength: number)
  */
 export function useLiquidGlass(ref: RefObject<HTMLElement | null>, { band = 0.42, strength = 0.75 }: Options = {}) {
   const [glass, setGlass] = useState<LiquidGlassMap | null>(null)
+  const lite = usePerfLite()
 
   useEffect(() => {
     const el = ref.current
+    // modo leve: o feDisplacementMap no backdrop é o efeito mais caro do site
+    if (lite) {
+      setGlass(null)
+      return
+    }
     if (!el || !supported()) return
 
     let frame = 0
@@ -104,7 +111,7 @@ export function useLiquidGlass(ref: RefObject<HTMLElement | null>, { band = 0.42
       ro.disconnect()
       cancelAnimationFrame(frame)
     }
-  }, [ref, band, strength])
+  }, [ref, band, strength, lite])
 
   return glass
 }

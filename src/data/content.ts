@@ -134,7 +134,7 @@ export const results = {
   title: 'Resultados que transformam',
   accent: 'negócios.',
   lead: 'O que nossos clientes dizem.',
-  background: '/clientes/escritorio.webp',
+  background: '/clientes/escritorio-blur.webp',
   items: [
     { kind: 'logo', name: 'Supriloc', src: '/clientes/supriloc-branca.avif' },
     { kind: 'logo', name: 'Lissen Fit Wear', src: '/clientes/lissen.avif' },

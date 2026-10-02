@@ -170,6 +170,27 @@
 :hover > .cursor-glow::before,
 :hover > .cursor-glow::after { opacity: 1; }
 
+/* Modo leve (ver lib/perf.ts): <html data-perf="lite"> em máquinas fracas.
+   Mesmo visual, sem backdrop-filter — cada vidro é uma cópia desfocada do fundo
+   recalculada a cada frame, e isso é o que trava em notebook sem GPU. Os fundos
+   ficam um pouco mais opacos para o texto continuar legível sem o blur. */
+:root[data-perf='lite'] .glass,
+:root[data-perf='lite'] .glass-strong,
+:root[data-perf='lite'] .glass-light,
+:root[data-perf='lite'] .backdrop-blur-2xl {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+:root[data-perf='lite'] .glass { background: rgba(255, 255, 255, 0.1); }
+:root[data-perf='lite'] .glass-strong { background: rgba(18, 22, 32, 0.78); }
+:root[data-perf='lite'] .glass-light { background: rgba(255, 255, 255, 0.88); }
+/* header: pílula sem liquid glass nem blur, só translúcida */
+:root[data-perf='lite'] header > nav { background-color: rgba(10, 13, 20, 0.86); }
+/* overlay do menu mobile */
+:root[data-perf='lite'] .bg-ink\/80.backdrop-blur-2xl { background-color: rgba(7, 9, 12, 0.96); }
+/* brilho do cursor: só o anel, sem o halo com filter blur */
+:root[data-perf='lite'] .cursor-glow::after { display: none; }
+
 /* Linhas de SplitText com máscara: o wrapper tem overflow clip, então com
    line-height apertado ele cortaria descendentes (g, ç) e acentos. A folga
    de padding é compensada por margem negativa para o layout não mudar. */

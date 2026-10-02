@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { gsap, useGSAP, ScrollTrigger, ScrollSmoother, MOTION_OK } from './lib/gsap'
+import { gsap, useGSAP, ScrollTrigger, ScrollSmoother, heavy } from './lib/gsap'
 import { Preloader } from './components/Preloader'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
@@ -16,10 +16,10 @@ export default function App() {
   const [intro, setIntro] = useState(false)
   const introDone = useCallback(() => setIntro(true), [])
 
-  // scroll suave + transição "cartões empilhados" entre as sections
+  // scroll suave + transição "cartões empilhados" entre as sections.
+  // Tudo dentro de heavy(): no modo leve as sections só rolam, sem pin nem smoother.
   useGSAP(() => {
-    const mm = gsap.matchMedia()
-    mm.add(MOTION_OK, () => {
+    heavy(() => {
       const smoother = ScrollSmoother.create({
         wrapper: '#smooth-wrapper',
         content: '#smooth-content',

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { gsap, useGSAP, MOTION_OK } from '../lib/gsap'
+import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { services, servicesCta, marquee } from '../data/content'
 import { StackSection } from './StackSection'
@@ -27,7 +27,7 @@ export function Services() {
         scrollTrigger: { trigger: q('.cards'), start: 'top 82%', once: true },
       })
 
-      gsap.matchMedia().add(MOTION_OK, () => {
+      heavy(() => {
         const scrub = { trigger: root.current, start: 'top bottom', end: 'bottom top', scrub: true }
         gsap.to(q('.blob-a'), { y: 260, ease: 'none', scrollTrigger: scrub })
         gsap.to(q('.blob-b'), { y: -220, ease: 'none', scrollTrigger: scrub })

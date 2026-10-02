@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { gsap, useGSAP, MOTION_OK } from '../lib/gsap'
+import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { results } from '../data/content'
 
@@ -52,7 +52,7 @@ export function Testimonials() {
         scrollTrigger: { trigger: q('.grid-bento'), start: 'top 82%', once: true },
       })
 
-      gsap.matchMedia().add(MOTION_OK, () => {
+      heavy(() => {
         // foto de fundo com parallax leve
         gsap.fromTo(
           q('.bg'),
@@ -70,10 +70,10 @@ export function Testimonials() {
 
   return (
     <div ref={root} id="resultados" className="relative overflow-hidden px-6 pb-24 pt-24 md:pb-32 md:pt-28">
-      {/* fundo: foto do escritório, escurecida para o texto e os cartões lerem bem */}
+      {/* fundo: foto do escritório já desfocada no arquivo (blur ao vivo era caro), escurecida para o texto ler bem */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div
-          className="bg absolute -inset-[8%] bg-cover bg-center blur-[6px] will-change-transform"
+          className="bg absolute -inset-[8%] bg-cover bg-center will-change-transform"
           style={{ backgroundImage: `url(${results.background})` }}
         />
         <div className="absolute inset-0 bg-ink/70" />

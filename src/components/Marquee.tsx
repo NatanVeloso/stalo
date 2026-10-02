@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { gsap, useGSAP, ScrollTrigger, MOTION_OK } from '../lib/gsap'
+import { gsap, useGSAP, ScrollTrigger, heavy } from '../lib/gsap'
 
 type Props = { items: string[]; tone?: 'dark' | 'light' }
 
@@ -16,7 +16,7 @@ export function Marquee({ items, tone = 'dark' }: Props) {
       // começa "no meio" dos repeats para poder andar pra trás sem travar no 0
       tween.totalTime(tween.duration() * 500)
 
-      gsap.matchMedia().add(MOTION_OK, () => {
+      heavy(() => {
         ScrollTrigger.create({
           onUpdate(self) {
             const v = self.getVelocity()

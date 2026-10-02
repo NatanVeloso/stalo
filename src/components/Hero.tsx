@@ -1,5 +1,5 @@
 import { useRef, type MouseEvent } from 'react'
-import { gsap, useGSAP, SplitText, MOTION_OK } from '../lib/gsap'
+import { gsap, useGSAP, SplitText, heavy } from '../lib/gsap'
 import { images } from '../data/content'
 import { StackSection } from './StackSection'
 import { CursorGlow } from './CursorGlow'
@@ -36,13 +36,16 @@ export function Hero({ play }: Props) {
   // parallax de saída
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
-        gsap.to('.hero-bg', {
-          yPercent: 18,
-          ease: 'none',
-          scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
-        })
-      })
+      heavy(
+        () => {
+          gsap.to('.hero-bg', {
+            yPercent: 18,
+            ease: 'none',
+            scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
+          })
+        },
+        { scope: root },
+      )
     },
     { scope: root },
   )
