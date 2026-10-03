@@ -5,7 +5,7 @@ import { useSyncExternalStore } from 'react'
  *
  * `full`: tudo ligado (liquid glass, vidro com blur, ScrollSmoother, parallax).
  * `lite`: mesma aparência com versões baratas (sem backdrop-filter, scroll
- * nativo, sem animações presas ao scroll). Entra em máquinas fracas.
+ * nativo, sem pin do GSAP nem parallax). Entra em máquinas fracas.
  *
  * O modo vai para `<html data-perf="...">` (o CSS lê) e para quem assinar
  * `subscribe` (o GSAP lê via `heavy()` em lib/gsap.ts).

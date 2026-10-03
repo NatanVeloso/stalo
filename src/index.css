@@ -191,6 +191,17 @@
 /* brilho do cursor: só o anel, sem o halo com filter blur */
 :root[data-perf='lite'] .cursor-glow::after { display: none; }
 
+/* Sections empilháveis sem o pin: a próxima não desliza por cima da anterior,
+   então os cantos arredondados mostrariam o fundo preto do body. Cada section
+   sobe o raio por cima da anterior (z-index crescente) e a anterior ganha a
+   mesma folga embaixo para o conteúdo dela não ficar coberto. */
+:root[data-perf='lite'] { --stack-overlap: 28px; }
+@media (min-width: 48rem) {
+  :root[data-perf='lite'] { --stack-overlap: 40px; }
+}
+:root[data-perf='lite'] [data-stack] + [data-stack] { margin-top: calc(-1 * var(--stack-overlap)); }
+:root[data-perf='lite'] [data-stack]:not(:last-child) > [data-stack-inner] { padding-bottom: var(--stack-overlap); }
+
 /* Linhas de SplitText com máscara: o wrapper tem overflow clip, então com
    line-height apertado ele cortaria descendentes (g, ç) e acentos. A folga
    de padding é compensada por margem negativa para o layout não mudar. */
@@ -218,6 +229,15 @@
   width: calc(100% - var(--i) * var(--tab));
   overflow: hidden; /* o conteúdo que desliza ao ser coberto não vaza pro painel anterior */
 }
+/* Modo leve: quem prende a área é o position: sticky (o navegador resolve na
+   rolagem, sem pin do GSAP). O trilho dá a distância de scroll: 110vh por
+   passo, igual ao pin do modo full. */
+.steps-track[data-pin='sticky'] { height: calc(100vh + var(--segments) * 110vh); }
+.steps-track[data-pin='sticky'] > .steps { position: sticky; top: 0; }
+/* sticky não gruda dentro de overflow: hidden (o ancestral vira um scroller);
+   clip corta igual, cantos arredondados inclusive, sem esse efeito */
+:root[data-perf='lite'] [data-stack],
+:root[data-perf='lite'] [data-stack-inner] { overflow: clip; }
 /* a faixa fica opaca e acima do conteúdo do próprio painel */
 .steps[data-mode='horizontal'] .panel-strip {
   display: flex;
