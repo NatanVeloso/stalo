@@ -78,7 +78,7 @@ export function Services() {
   )
 }
 
-function ServiceCard({ n, title, text }: (typeof services)[number]) {
+function ServiceCard({ n, title, text, image }: (typeof services)[number]) {
   const ref = useRef<HTMLDivElement>(null)
 
   // tilt 3D + holofote que segue o cursor
@@ -119,8 +119,20 @@ function ServiceCard({ n, title, text }: (typeof services)[number]) {
       ref={ref}
       className="card spotlight group flex min-h-[300px] flex-col gap-7 rounded-3xl border border-navy/[0.08] bg-white/70 p-7 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_12px_40px_rgba(11,18,32,0.05)] transition-[background-color,box-shadow] duration-300 [--spot:rgba(47,91,214,0.12)] hover:bg-white hover:shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_24px_60px_rgba(11,18,32,0.1)]"
     >
-      <span className="text-[13px] tabular-nums text-slate">{n}</span>
-      <div>
+      {/* foto no topo esmaecendo até sumir onde o texto começa: a máscara deixa o fundo do card aparecer */}
+      <div className="relative -mx-7 -mb-12 -mt-7 h-48 overflow-hidden rounded-t-[23px] [mask-image:linear-gradient(to_bottom,#000_30%,transparent_95%)]">
+        <img
+          src={image}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <span className="absolute left-5 top-5 rounded-full bg-white/85 px-2.5 py-1 text-[12px] tabular-nums text-navy">
+          {n}
+        </span>
+      </div>
+      <div className="relative">
         <h3 className="m-0 mb-2.5 text-[22px] font-medium leading-[1.15] tracking-[-0.01em]">{title}</h3>
         <p className="m-0 text-pretty text-[15px] leading-[1.55] text-slate-2">{text}</p>
       </div>

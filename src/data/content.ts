@@ -14,36 +14,45 @@ export const contact = {
     encodeURIComponent('Olá! Vim pelo site da Stalo e quero falar com um consultor.'),
 }
 
+// Fotos provisórias dos cards de serviço (Unsplash), substituir pelas definitivas
+const servicePhoto = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=800&q=70`
+
 export const services = [
   {
     n: '01',
     title: 'Gestão Contábil',
     text: 'Uma gestão contábil integrada, precisa e orientada por dados. Entregamos relatórios estratégicos, organização total e visão clara para decisões seguras e crescimento contínuo.',
+    image: servicePhoto('1554224155-6726b3ff858f'),
   },
   {
     n: '02',
     title: 'Gestão de Departamento Pessoal & RH',
     text: 'Executamos toda a rotina trabalhista com rigor técnico e eficiência. Reduzimos riscos, estruturamos processos e garantimos uma experiência fluida e confiável para sua equipe.',
+    image: servicePhoto('1522071820081-009f0129c71c'),
   },
   {
     n: '03',
     title: 'Inteligência Tributária',
     text: 'Estruturamos estratégias fiscais com alto nível de precisão. Identificamos oportunidades, mitigamos os riscos e otimizamos a carga tributária com segurança jurídica e visão consultiva.',
+    image: servicePhoto('1450101499163-c8848c66ca85'),
   },
   {
     n: '04',
     title: 'BPO Financeiro',
     text: 'Assumimos sua operação financeira com controle absoluto, padronização e transparência. Você ganha previsibilidade, precisão nos números e tempo para focar no estratégico.',
+    image: servicePhoto('1454165804606-c3d57bc86b40'),
   },
   {
     n: '05',
     title: 'Revisão e Recuperação de Tributos',
     text: 'Analisamos profundamente seu histórico fiscal para encontrar créditos, corrigir inconsistências e recuperar valores pagos indevidamente — fortalecendo sua saúde financeira.',
+    image: servicePhoto('1554224154-26032ffc0d07'),
   },
   {
     n: '06',
     title: 'Inteligência de Sucesso',
     text: 'Acompanhamos de perto os indicadores do seu negócio para antecipar cenários, orientar decisões e impulsionar performance. Estratégia contínua para crescimento sustentável e resultados consistentes.',
+    image: servicePhoto('1551288049-bebda4e38f71'),
   },
 ]
 
