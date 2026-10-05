@@ -1,131 +1,85 @@
+import { t, type Dictionary } from '../i18n'
+import { company } from './company'
+
+/**
+ * Conteúdo do site pronto para os componentes: junta o que não muda por
+ * idioma (links, imagens, tons, ordem) com os textos do idioma atual (`t`).
+ * Texto novo entra em src/i18n/locales, nunca aqui.
+ */
+
 export const nav = [
-  { label: 'Serviços', href: '#servicos' },
-  { label: 'Sobre', href: '#sobre' },
-  { label: 'Como funciona', href: '#processo' },
-  { label: 'Contato', href: '#contato' },
+  { label: t.nav.services, href: '#servicos' },
+  { label: t.nav.about, href: '#sobre' },
+  { label: t.nav.process, href: '#processo' },
+  { label: t.nav.faq, href: '#faq' },
+  { label: t.nav.contact, href: '#contato' },
 ]
 
 export const contact = {
-  email: 'contato@staloconsulting.com.br',
-  phone: '(62) 9 9513-6343',
-  phoneHref: 'tel:+5562995136343',
-  whatsapp:
-    'https://wa.me/5562995136343?text=' +
-    encodeURIComponent('Olá! Vim pelo site da Stalo e quero falar com um consultor.'),
+  email: company.email,
+  phone: company.phone,
+  phoneHref: company.phoneHref,
+  whatsapp: `https://wa.me/${company.whatsappNumber}?text=` + encodeURIComponent(t.common.whatsappMessage),
 }
 
 // Fotos provisórias dos cards de serviço (Unsplash), substituir pelas definitivas
 const servicePhoto = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=800&q=70`
 
-export const services = [
-  {
-    n: '01',
-    title: 'Gestão Contábil',
-    text: 'Uma gestão contábil integrada, precisa e orientada por dados. Entregamos relatórios estratégicos, organização total e visão clara para decisões seguras e crescimento contínuo.',
-    image: servicePhoto('1554224155-6726b3ff858f'),
-  },
-  {
-    n: '02',
-    title: 'Gestão de Departamento Pessoal & RH',
-    text: 'Executamos toda a rotina trabalhista com rigor técnico e eficiência. Reduzimos riscos, estruturamos processos e garantimos uma experiência fluida e confiável para sua equipe.',
-    image: servicePhoto('1522071820081-009f0129c71c'),
-  },
-  {
-    n: '03',
-    title: 'Inteligência Tributária',
-    text: 'Estruturamos estratégias fiscais com alto nível de precisão. Identificamos oportunidades, mitigamos os riscos e otimizamos a carga tributária com segurança jurídica e visão consultiva.',
-    image: servicePhoto('1450101499163-c8848c66ca85'),
-  },
-  {
-    n: '04',
-    title: 'BPO Financeiro',
-    text: 'Assumimos sua operação financeira com controle absoluto, padronização e transparência. Você ganha previsibilidade, precisão nos números e tempo para focar no estratégico.',
-    image: servicePhoto('1454165804606-c3d57bc86b40'),
-  },
-  {
-    n: '05',
-    title: 'Revisão e Recuperação de Tributos',
-    text: 'Analisamos profundamente seu histórico fiscal para encontrar créditos, corrigir inconsistências e recuperar valores pagos indevidamente — fortalecendo sua saúde financeira.',
-    image: servicePhoto('1554224154-26032ffc0d07'),
-  },
-  {
-    n: '06',
-    title: 'Inteligência de Sucesso',
-    text: 'Acompanhamos de perto os indicadores do seu negócio para antecipar cenários, orientar decisões e impulsionar performance. Estratégia contínua para crescimento sustentável e resultados consistentes.',
-    image: servicePhoto('1551288049-bebda4e38f71'),
-  },
+type ServiceId = keyof Dictionary['services']['items']
+
+// a ordem aqui é a ordem dos cards; título e texto vêm do dicionário pela chave
+const serviceMedia: { id: ServiceId; image: string }[] = [
+  { id: 'accounting', image: servicePhoto('1554224155-6726b3ff858f') },
+  { id: 'hr', image: servicePhoto('1522071820081-009f0129c71c') },
+  { id: 'tax', image: servicePhoto('1450101499163-c8848c66ca85') },
+  { id: 'bpo', image: servicePhoto('1454165804606-c3d57bc86b40') },
+  { id: 'recovery', image: servicePhoto('1554224154-26032ffc0d07') },
+  { id: 'success', image: servicePhoto('1551288049-bebda4e38f71') },
 ]
 
-export const servicesCta = { label: 'Fale com um consultor', href: contact.whatsapp }
+export const services = serviceMedia.map(({ id, image }, i) => ({
+  n: String(i + 1).padStart(2, '0'),
+  image,
+  ...t.services.items[id],
+}))
 
-export const marquee = [
-  'Gestão Contábil',
-  'Departamento Pessoal & RH',
-  'Inteligência Tributária',
-  'BPO Financeiro',
-  'Recuperação de Tributos',
-  'Inteligência de Sucesso',
-]
+export const servicesCta = { label: t.common.talkToConsultant, href: contact.whatsapp }
 
-export const stats = [
-  { value: 95, suffix: '%', label: 'Índice de satisfação dos clientes' },
-  { value: 1, suffix: 'BI', label: 'Em ativos acompanhados' },
-  { prefix: '+', value: 300, label: 'Empresas atendidas', sub: 'Que confiam na nossa inteligência contábil' },
-]
+export const marquee = t.services.marquee
 
-export const values = [
-  { title: 'Atendimento direto', text: 'Um responsável dedicado à sua conta.' },
-  { title: 'Processos digitais', text: 'Documentos e relatórios online.' },
-  { title: 'Prazo em dia', text: 'Obrigações entregues sem atraso.' },
-]
+export const stats = t.about.stats
+
+export const values = t.about.values
 
 export type StepTone = 'dark' | 'light'
+type StepId = keyof Dictionary['process']['steps']
 
-export const steps: {
-  n: string
-  name: string
-  eyebrow: string
-  title: string
-  accent: string
-  text: string
-  image: string
-  tone: StepTone
-  bg: string
-}[] = [
+const stepMedia: { id: StepId; image: string; tone: StepTone; bg: string }[] = [
   {
-    n: '01',
-    name: 'Como ser um cliente da Stalo',
-    eyebrow: 'Análise',
-    title: 'O primeiro passo para uma gestão contábil',
-    accent: 'inteligente e transformadora',
-    text: 'Realizamos um diagnóstico completo da sua estrutura atual para identificar riscos, oportunidades e o melhor caminho estratégico para o seu crescimento.',
+    id: 'analysis',
     image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1400&q=80',
     tone: 'dark',
     bg: 'bg-navy',
   },
   {
-    n: '02',
-    name: 'Plano personalizado',
-    eyebrow: 'Estratégia',
-    title: 'Estratégia financeira',
-    accent: 'desenhada para o seu negócio',
-    text: 'Construímos um plano personalizado, combinando dados, tecnologia e visão consultiva para direcionar sua empresa ao próximo nível.',
+    id: 'strategy',
     image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1400&q=80',
     tone: 'light',
     bg: 'bg-paper',
   },
   {
-    n: '03',
-    name: 'Acompanhamento contínuo',
-    eyebrow: 'Suporte',
-    title: 'Evolução guiada e',
-    accent: 'constância na performance',
-    text: 'Mantemos um acompanhamento próximo, analisando resultados, ajustando rotas e garantindo a execução precisa da estratégia para que seu negócio continue avançando com segurança e inteligência.',
+    id: 'support',
     image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80',
     tone: 'dark',
     bg: 'bg-teal-deep',
   },
 ]
+
+export const steps = stepMedia.map(({ id, ...media }, i) => ({
+  n: String(i + 1).padStart(2, '0'),
+  ...media,
+  ...t.process.steps[id],
+}))
 
 export type ResultItem =
   | { kind: 'logo'; name: string; src: string; /** colunas no grid de 4 (desktop) */ span?: 1 | 2 }
@@ -138,11 +92,22 @@ export type ResultItem =
       span?: 1 | 2
     }
 
+/**
+ * Carrossel de logos na base da hero (ClientLogos.tsx). Cliente novo: basta
+ * incluir aqui, com o logo claro (para fundo escuro) em public/clientes.
+ */
+export const clients = [
+  { name: 'Supriloc', src: '/clientes/supriloc-branca.avif' },
+  { name: 'Lissen Fit Wear', src: '/clientes/lissen.avif' },
+  { name: 'Tshirteria', src: '/clientes/tshirteria.avif' },
+  { name: 'Sky Consórcios', src: '/clientes/sky.avif' },
+]
+
 /** Seção "Resultados": bento com logos de clientes e depoimentos (grid de 4 colunas no desktop). */
 export const results = {
-  title: 'Resultados que transformam',
-  accent: 'negócios.',
-  lead: 'O que nossos clientes dizem.',
+  title: t.results.title,
+  accent: t.results.accent,
+  lead: t.results.lead,
   background: '/clientes/escritorio-blur.webp',
   items: [
     { kind: 'logo', name: 'Supriloc', src: '/clientes/supriloc-branca.avif' },
@@ -150,7 +115,7 @@ export const results = {
     {
       kind: 'quote',
       span: 2,
-      text: 'Com a Stalo descobrimos clareza, organização e previsibilidade. Hoje tomamos decisões com segurança e enxergamos nosso negócio de forma estratégica.',
+      text: t.results.quotes.emanoel,
       author: 'Emanoel Oliveira',
       company: 'Gene Digital',
       avatar: '/clientes/emanoel-oliveira.avif',
@@ -158,7 +123,7 @@ export const results = {
     {
       kind: 'quote',
       span: 2,
-      text: 'A Stalo trouxe inteligência, orientação e direção para nossa gestão. O que antes era confuso, agora é simples, estruturado e escalável.',
+      text: t.results.quotes.walex,
       author: 'Walex Mateus',
       company: 'Jarbas.ai',
       avatar: '/clientes/walex-mateus.avif',
@@ -168,16 +133,19 @@ export const results = {
   ] satisfies ResultItem[],
 }
 
+/** Seção "Perguntas frequentes" (sanfona), logo antes dos depoimentos. */
+export const faq = t.faq
+
 export const footerLinks = [
-  { label: 'Soluções', href: '#servicos' },
-  { label: 'Portal do Cliente', href: '#' },
-  { label: 'Como Funciona', href: '#processo' },
-  { label: 'Contato', href: '#contato' },
-  { label: 'FAQ', href: '#' },
+  { label: t.footer.links.solutions, href: '#servicos' },
+  { label: t.footer.links.portal, href: '#' },
+  { label: t.footer.links.process, href: '#processo' },
+  { label: t.footer.links.contact, href: '#contato' },
+  { label: t.footer.links.faq, href: '#faq' },
 ]
 
 export const images = {
   hero: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80',
-  about: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1400&q=80',
+  about: '/sobre.webp',
   contact: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80',
 }

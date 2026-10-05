@@ -1,6 +1,7 @@
 import { useRef, type CSSProperties } from 'react'
 import { gsap, useGSAP, heavy, MOTION_OK } from '../lib/gsap'
 import { steps, servicesCta } from '../data/content'
+import { t } from '../i18n'
 import { StackSection } from './StackSection'
 import { Logo } from './Logo'
 import { CursorGlow } from './CursorGlow'
@@ -62,6 +63,11 @@ export function Process() {
               scrub: 0.6,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              // este pin empurra a página (pinSpacing) e o pin da section (App) depende
+              // desse espaço. Os dois gatilhos começam no mesmo Y, e num refresh com a
+              // página já rolada (reload, resize) o ScrollTrigger reordenava pela posição
+              // atual e calculava a section antes; a prioridade fixa a ordem.
+              refreshPriority: 1,
             },
           })
 
@@ -173,7 +179,7 @@ export function Process() {
                         {s.name}
                       </span>
                       <span className={`hidden whitespace-nowrap sm:inline ${dark ? 'text-fog/50' : 'text-navy/50'}`}>
-                        Como funciona · {s.n}/{String(steps.length).padStart(2, '0')}
+                        {t.process.label} · {s.n}/{String(steps.length).padStart(2, '0')}
                       </span>
                     </div>
 

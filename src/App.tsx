@@ -7,10 +7,13 @@ import { Services } from './components/Services'
 import { About } from './components/About'
 import { Process } from './components/Process'
 import { Testimonials } from './components/Testimonials'
+import { Faq } from './components/Faq'
 import { Footer } from './components/Footer'
 import { StackSection } from './components/StackSection'
 import { ScrollProgress } from './components/ScrollProgress'
 import { WhatsAppButton } from './components/WhatsAppButton'
+import { CookieConsent } from './components/CookieConsent'
+import { ConsultantInvite } from './components/ConsultantInvite'
 
 export default function App() {
   const [intro, setIntro] = useState(false)
@@ -76,6 +79,8 @@ export default function App() {
       <ScrollProgress />
       <Header show={intro} />
       <WhatsAppButton show={intro} />
+      <CookieConsent show={intro} />
+      <ConsultantInvite ready={intro} />
 
       <div id="smooth-wrapper">
         <div id="smooth-content">
@@ -84,7 +89,8 @@ export default function App() {
             <Services />
             <About />
             <Process />
-            <StackSection id="contato" z={5} innerClassName="bg-ink">
+            <StackSection z={5} innerClassName="bg-ink">
+              <Faq />
               <Testimonials />
               <Footer />
             </StackSection>

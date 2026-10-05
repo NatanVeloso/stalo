@@ -1,9 +1,11 @@
 import { useRef, useState, type MouseEvent } from 'react'
 import { gsap, useGSAP, ScrollTrigger, ScrollSmoother } from '../lib/gsap'
 import { nav, contact } from '../data/content'
+import { t } from '../i18n'
 import { useLiquidGlass } from '../hooks/useLiquidGlass'
 import { Logo } from './Logo'
 import { CursorGlow } from './CursorGlow'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 type Props = { show: boolean }
 
@@ -42,7 +44,8 @@ export function Header({ show }: Props) {
     nav.forEach(({ href }) => {
       ScrollTrigger.create({
         trigger: href,
-        start: 'top 45%',
+        // clamp: o rodapé (#contato) é baixo e nunca chega a 45% da tela; assim ele ativa no fim da página
+        start: 'clamp(top 45%)',
         end: 'bottom 45%',
         onToggle: (self) => self.isActive && setActive(href),
       })
@@ -123,17 +126,18 @@ export function Header({ show }: Props) {
               <div className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-[linear-gradient(120deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0)_30%,rgba(255,255,255,0)_70%,rgba(255,255,255,0.1)_100%)]" />
             </>
           )}
-          <a href="#top" onClick={(e) => go(e, '#top')} className="flex items-center text-fog" aria-label="Início">
+          <a href="#top" onClick={(e) => go(e, '#top')} className="flex items-center text-fog" aria-label={t.common.home}>
             <Logo className="h-[26px] w-auto" />
           </a>
 
-          <div className="hidden items-center gap-7 text-[15px] md:flex">
+          {/* entre md e lg os 5 links dividem a pílula com o CTA: fonte e espaçamento menores para caber numa linha */}
+          <div className="hidden items-center gap-4 text-sm md:flex lg:gap-7 lg:text-[15px]">
             {nav.map(({ label, href }) => (
               <a
                 key={href}
                 href={href}
                 onClick={(e) => go(e, href)}
-                className={`relative py-1 transition-colors duration-300 hover:text-sky ${
+                className={`relative whitespace-nowrap py-1 transition-colors duration-300 hover:text-sky ${
                   active === href ? 'text-fog' : 'text-fog/75'
                 }`}
               >
@@ -148,18 +152,20 @@ export function Header({ show }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* entre md e lg não cabe na pílula ao lado dos 5 links: ali o seletor fica só no rodapé */}
+            <LanguageSwitcher variant="menu" className="md:hidden lg:block" />
             <a
               href={contact.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="relative hidden whitespace-nowrap rounded-full bg-fog px-5 py-2.5 text-sm font-semibold text-[#0a0a0a] transition-colors hover:bg-white sm:block"
             >
-              Fale com um contador
+              {t.common.talkToAccountant}
               <CursorGlow />
             </a>
             <button
               type="button"
-              aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+              aria-label={open ? t.common.closeMenu : t.common.openMenu}
               aria-expanded={open}
               onClick={() => toggle(!open)}
               className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 md:hidden"
@@ -194,7 +200,7 @@ export function Header({ show }: Props) {
           onClick={() => toggle(false)}
           className="menu-link mt-4 rounded-full bg-fog px-7 py-4 text-base font-semibold text-[#0a0a0a]"
         >
-          Fale com um contador
+          {t.common.talkToAccountant}
         </a>
       </div>
     </>

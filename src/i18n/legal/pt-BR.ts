@@ -1,31 +1,12 @@
-import { contact } from './content'
+import { company } from '../../data/company'
+import type { LegalDoc, LegalDocs } from '../types'
 
-/** Parágrafo (string) ou lista de itens (string[]). */
-export type LegalBlock = string | string[]
-export type LegalSection = { title: string; body: LegalBlock[] }
-export type LegalDoc = {
-  slug: string
-  title: string
-  updated: string
-  intro: string
-  sections: LegalSection[]
-}
+/* Textos legais em português: é a versão que vale. en.ts e es.ts são traduções dela. */
 
-/* Dados da empresa. CNPJ e endereço precisam ser preenchidos antes de publicar. */
-const company = {
-  name: 'Stalo Consulting',
-  cnpj: '[CNPJ]',
-  address: '[endereço completo]',
-  city: 'Goiânia/GO',
-  email: contact.email,
-  phone: contact.phone,
-  site: 'staloconsulting.com.br',
-}
-
-export const privacy: LegalDoc = {
+const privacy: LegalDoc = {
   slug: 'privacidade',
   title: 'Política de Privacidade',
-  updated: '2 de outubro de 2026',
+  updated: '5 de outubro de 2026',
   intro: `A ${company.name} respeita a sua privacidade. Esta política explica quais dados pessoais coletamos quando você visita o site ${company.site} ou entra em contato conosco, por que coletamos, como usamos e quais são os seus direitos, em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018, "LGPD").`,
   sections: [
     {
@@ -74,7 +55,8 @@ export const privacy: LegalDoc = {
       title: '5. Cookies',
       body: [
         'Cookies são pequenos arquivos armazenados no seu navegador. Usamos cookies essenciais, necessários ao funcionamento do site, e cookies de análise, que nos ajudam a entender como o site é usado.',
-        'Você pode bloquear ou apagar cookies nas configurações do seu navegador. Bloquear cookies essenciais pode afetar o funcionamento de algumas partes do site.',
+        'Com o seu consentimento, usamos também cookies de marketing da Meta (Pixel da Meta, usado pelo Facebook e pelo Instagram) para medir o resultado dos nossos anúncios e exibi-los a quem já visitou o site. Esses cookies só são ativados depois que você aceita o aviso de cookies; se você recusar, nada é carregado. Você pode mudar essa escolha a qualquer momento em “Preferências de cookies”, no rodapé do site.',
+        'Você também pode bloquear ou apagar cookies nas configurações do seu navegador. Bloquear cookies essenciais pode afetar o funcionamento de algumas partes do site.',
       ],
     },
     {
@@ -83,6 +65,7 @@ export const privacy: LegalDoc = {
         'Não vendemos seus dados pessoais. Compartilhamos dados apenas quando necessário, com:',
         [
           'Fornecedores de tecnologia que hospedam o site, armazenam e-mails, operam ferramentas de análise e sistemas de gestão, sob obrigações de confidencialidade.',
+          'Meta Platforms (Facebook e Instagram), somente se você aceitar os cookies de marketing: ela recebe dados de navegação, como páginas visitadas e cliques nos botões de contato, para a mensuração de anúncios.',
           'Órgãos públicos e autoridades, quando exigido por lei, regulamento ou decisão judicial.',
           'Parceiros e profissionais envolvidos na prestação dos serviços contratados, no limite do necessário.',
         ],
@@ -139,7 +122,7 @@ export const privacy: LegalDoc = {
   ],
 }
 
-export const terms: LegalDoc = {
+const terms: LegalDoc = {
   slug: 'termos',
   title: 'Termos de Uso',
   updated: '2 de outubro de 2026',
@@ -235,5 +218,4 @@ export const terms: LegalDoc = {
   ],
 }
 
-export const legalDocs = { privacidade: privacy, termos: terms } as const
-export type LegalSlug = keyof typeof legalDocs
+export const legalPtBR: LegalDocs = { privacy, terms }

@@ -76,6 +76,15 @@
   box-shadow: 0 20px 60px rgba(11, 18, 32, 0.08);
 }
 
+/* Card escuro do "Sobre": tons tirados da foto (parede ripada + parede oliva) */
+@utility card-photo {
+  background:
+    radial-gradient(110% 80% at 0% 0%, rgba(121, 116, 95, 0.42), transparent 62%),
+    linear-gradient(160deg, #2f2d2e 0%, #1b1a1c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(11, 18, 32, 0.18);
+}
+
 @utility serif-italic {
   font-family: var(--font-serif);
   font-style: italic;
@@ -204,11 +213,16 @@
 
 /* Linhas de SplitText com máscara: o wrapper tem overflow clip, então com
    line-height apertado ele cortaria descendentes (g, ç) e acentos. A folga
-   de padding é compensada por margem negativa para o layout não mudar. */
+   de padding é compensada para o layout não mudar. A compensação vai toda na
+   margem de baixo (e o `top` devolve a folga de cima): margens negativas de
+   linhas vizinhas colapsam em vez de somar, e dividir entre cima e baixo
+   deixava cada linha 0.1em mais afastada, com um salto quando o split é desfeito. */
 .split-line { display: block; }
 .split-line-mask {
+  position: relative;
+  top: -0.1em;
   padding: 0.1em 0 0.16em;
-  margin: -0.1em 0 -0.16em;
+  margin: 0 0 -0.26em;
 }
 
 /* Esconde o conteúdo até o GSAP assumir (evita flash antes do preloader). */

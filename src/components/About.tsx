@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { values, stats, images } from '../data/content'
+import { t } from '../i18n'
 import { StackSection } from './StackSection'
 
 export function About() {
@@ -100,33 +101,29 @@ export function About() {
         </svg>
 
         <div className="container-site relative grid items-stretch gap-6 md:grid-cols-2">
-          <div className="img-wrap relative min-h-[420px] overflow-hidden rounded-4xl bg-[#c9d2de] md:min-h-[520px]">
+          <div className="img-wrap relative min-h-[420px] overflow-hidden rounded-4xl bg-[#2f2d2e] md:min-h-[520px]">
             <div
-              className="img absolute -inset-[10%] bg-cover bg-center will-change-transform"
-              style={{ backgroundImage: `url(${images.about})` }}
+              className="img absolute -inset-[10%] bg-cover will-change-transform"
+              style={{ backgroundImage: `url(${images.about})`, backgroundPosition: '20% center' }}
             />
-            <div className="glass absolute bottom-4 left-4 right-4 rounded-[20px] px-5.5 py-5 text-sm text-white">
-              Foto provisória · substituir pela equipe Stalo
-            </div>
           </div>
 
-          <div className="text-card glass-light flex flex-col justify-between gap-8 rounded-4xl p-8 md:p-10">
+          <div className="text-card card-photo flex flex-col justify-between gap-8 rounded-4xl p-8 text-[#f4f0ea] md:p-10">
             <div>
-              <p className="eyebrow m-0 mb-5 text-[13px] uppercase tracking-[0.12em] text-slate">Sobre a Stalo</p>
+              <p className="eyebrow m-0 mb-5 text-[13px] uppercase tracking-[0.12em] text-[#a8a08f]">{t.about.eyebrow}</p>
               <h2 className="title m-0 mb-5 text-[clamp(32px,3.6vw,46px)] font-medium leading-[1.05] tracking-[-0.03em]">
-                Um contador que conhece o seu negócio <span className="serif-italic">pelo nome.</span>
+                {t.about.title} <span className="serif-italic">{t.about.accent}</span>
               </h2>
-              <p className="lead m-0 text-pretty text-[17px] leading-[1.6] text-slate-2">
-                Trabalhamos lado a lado com empresários, transformando obrigações fiscais em informação útil para
-                decidir. Cada cliente tem um responsável direto, sem filas e sem respostas genéricas.
+              <p className="lead m-0 text-pretty text-[17px] leading-[1.6] text-[#cfc8bd]">
+                {t.about.lead}
               </p>
             </div>
 
             <div className="values grid gap-3 sm:grid-cols-3">
               {values.map((v) => (
-                <div key={v.title} className="value rounded-[18px] border border-navy/[0.08] bg-white/70 p-[18px]">
+                <div key={v.title} className="value rounded-[18px] border border-white/10 bg-white/[0.06] p-[18px]">
                   <div className="mb-1.5 text-base font-semibold">{v.title}</div>
-                  <div className="text-sm leading-[1.45] text-slate">{v.text}</div>
+                  <div className="text-sm leading-[1.45] text-[#b5ada0]">{v.text}</div>
                 </div>
               ))}
             </div>

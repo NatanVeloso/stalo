@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { services, servicesCta, marquee } from '../data/content'
+import { t } from '../i18n'
 import { StackSection } from './StackSection'
 import { Marquee } from './Marquee'
 import { CursorGlow } from './CursorGlow'
@@ -25,6 +26,11 @@ export function Services() {
         stagger: 0.08,
         duration: 1.2,
         scrollTrigger: { trigger: q('.cards'), start: 'top 82%', once: true },
+      })
+      gsap.from(q('.cta'), {
+        y: 40,
+        autoAlpha: 0,
+        scrollTrigger: { trigger: q('.cta'), start: 'top 92%', once: true },
       })
 
       heavy(() => {
@@ -60,10 +66,10 @@ export function Services() {
         <div className="container-site relative px-6 pt-20">
           <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
             <h2 className="title m-0 max-w-[640px] text-[clamp(36px,4.5vw,56px)] font-medium leading-[1.02] tracking-[-0.03em]">
-              Tudo o que sua empresa precisa, <span className="serif-italic">num só lugar.</span>
+              {t.services.title} <span className="serif-italic">{t.services.accent}</span>
             </h2>
             <p className="lead m-0 max-w-[360px] text-base leading-[1.55] text-slate-2">
-              Do registro do CNPJ ao fechamento do balanço, com uma equipe dedicada ao seu negócio.
+              {t.services.lead}
             </p>
           </div>
 
@@ -71,6 +77,39 @@ export function Services() {
             {services.map((s) => (
               <ServiceCard key={s.n} {...s} />
             ))}
+          </div>
+
+          {/* um convite só para a section inteira, fechando a grade */}
+          <div className="cta mt-4 flex flex-wrap items-center justify-between gap-x-10 gap-y-6 rounded-3xl border border-navy/[0.08] bg-white/70 p-7 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_12px_40px_rgba(11,18,32,0.05)] md:px-9">
+            <div>
+              <div className="mb-1.5 text-[22px] font-medium leading-[1.15] tracking-[-0.01em]">{t.services.cta.title}</div>
+              <p className="m-0 text-pretty text-[15px] leading-[1.55] text-slate-2">{t.services.cta.text}</p>
+            </div>
+            <a
+              href={servicesCta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center gap-3 rounded-full bg-navy py-3 pl-6 pr-2 text-[15px] font-semibold text-fog shadow-[0_8px_24px_rgba(11,18,32,0.18)] transition-[background-color,box-shadow] duration-300 hover:bg-blue hover:shadow-[0_12px_32px_rgba(47,91,214,0.35)]"
+            >
+              {servicesCta.label}
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 transition-colors duration-300 group-hover:bg-white/25">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform duration-300 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </span>
+              <CursorGlow />
+            </a>
           </div>
         </div>
       </div>
@@ -136,31 +175,6 @@ function ServiceCard({ n, title, text, image }: (typeof services)[number]) {
         <h3 className="m-0 mb-2.5 text-[22px] font-medium leading-[1.15] tracking-[-0.01em]">{title}</h3>
         <p className="m-0 text-pretty text-[15px] leading-[1.55] text-slate-2">{text}</p>
       </div>
-      <a
-        href={servicesCta.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="relative mt-auto flex w-full items-center justify-between gap-3 rounded-full bg-navy py-2 pl-5 pr-2 text-[15px] font-semibold text-fog shadow-[0_8px_24px_rgba(11,18,32,0.18)] transition-[background-color,box-shadow] duration-300 hover:bg-blue hover:shadow-[0_12px_32px_rgba(47,91,214,0.35)]"
-      >
-        {servicesCta.label}
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 transition-colors duration-300 group-hover:bg-white/25">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="transition-transform duration-300 group-hover:translate-x-0.5"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
-        </span>
-        <CursorGlow />
-      </a>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import { gsap, useGSAP, MOTION_OK } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { contact, images } from '../data/content'
+import { t } from '../i18n'
 import { CursorGlow } from './CursorGlow'
 
 const field =
@@ -74,10 +75,10 @@ export function Contact() {
         <div className="relative grid items-center gap-8 md:grid-cols-2">
           <div>
             <h2 className="title m-0 mb-4 text-[clamp(36px,4.5vw,60px)] font-medium leading-none tracking-[-0.03em]">
-              Vamos conversar sobre a sua empresa.
+              {t.contactForm.title}
             </h2>
             <p className="lead m-0 mb-7 max-w-[420px] text-[17px] leading-[1.55] text-fog/85">
-              Envie seus dados e retornamos em até um dia útil com uma proposta.
+              {t.contactForm.lead}
             </p>
             <div className="flex flex-col gap-2 text-[15px] text-fog/90">
               <a className="link w-fit transition-colors hover:text-sky" href={`mailto:${contact.email}`}>
@@ -91,33 +92,33 @@ export function Contact() {
 
           {sent ? (
             <div className="panel glass-strong rounded-[28px] px-8 py-10">
-              <div className="mb-2 text-2xl font-medium">Mensagem enviada.</div>
-              <div className="mb-5 text-[15px] text-fog/80">Obrigado, entraremos em contato em breve.</div>
+              <div className="mb-2 text-2xl font-medium">{t.contactForm.sentTitle}</div>
+              <div className="mb-5 text-[15px] text-fog/80">{t.contactForm.sentText}</div>
               <button
                 type="button"
                 onClick={() => setSent(false)}
                 className="relative cursor-pointer rounded-full border border-white/30 bg-transparent px-[18px] py-3 text-fog transition-colors hover:bg-white/10"
               >
-                Enviar outra
+                {t.contactForm.again}
                 <CursorGlow />
               </button>
             </div>
           ) : (
             <form onSubmit={submit} className="panel form glass-strong flex flex-col gap-3 rounded-[28px] p-6">
-              <input required name="nome" placeholder="Nome" className={`field ${field}`} />
-              <input required type="email" name="email" placeholder="E-mail" className={`field ${field}`} />
-              <input name="empresa" placeholder="Empresa / CNPJ" className={`field ${field}`} />
+              <input required name="nome" placeholder={t.contactForm.name} className={`field ${field}`} />
+              <input required type="email" name="email" placeholder={t.contactForm.email} className={`field ${field}`} />
+              <input name="empresa" placeholder={t.contactForm.company} className={`field ${field}`} />
               <textarea
                 rows={3}
                 name="mensagem"
-                placeholder="Como podemos ajudar?"
+                placeholder={t.contactForm.message}
                 className={`field resize-y ${field}`}
               />
               <button
                 type="submit"
                 className="field relative w-full cursor-pointer rounded-full bg-fog p-4 text-[15px] font-semibold text-[#0a0a0a] transition-colors hover:bg-white"
               >
-                Enviar
+                {t.contactForm.submit}
                 <CursorGlow />
               </button>
             </form>

@@ -1,8 +1,10 @@
 import { useRef, type MouseEvent } from 'react'
 import { gsap, useGSAP, SplitText, heavy } from '../lib/gsap'
 import { images } from '../data/content'
+import { t } from '../i18n'
 import { StackSection } from './StackSection'
 import { CursorGlow } from './CursorGlow'
+import { ClientLogos } from './ClientLogos'
 import { scrollToAnchor } from './Header'
 
 type Props = { play: boolean }
@@ -26,9 +28,9 @@ export function Hero({ play }: Props) {
 
       tl.set(q('[data-intro]'), { autoAlpha: 1 })
         .fromTo(q('.hero-bg'), { scale: 1.3 }, { scale: 1.08, duration: 2.4, ease: 'power3.out' }, 0)
-        .from(q('.hero-badge'), { y: 20, autoAlpha: 0, duration: 0.8 }, 0.15)
         .from(split.words, { yPercent: 130, stagger: 0.06, duration: 1.3 }, 0.25)
         .from(q('.hero-card'), { y: 60, autoAlpha: 0, duration: 1.3 }, 0.7)
+        .from(q('.hero-logos'), { y: 24, autoAlpha: 0, duration: 1.2 }, 1.1)
     },
     { dependencies: [play], scope: root },
   )
@@ -69,20 +71,13 @@ export function Hero({ play }: Props) {
           data-intro
           className="container-site relative grid items-end gap-6 md:grid-cols-[1.2fr_minmax(0,460px)]"
         >
-          <div>
-            <div className="hero-badge glass mb-6 inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px]">
-              <span className="h-[7px] w-[7px] rounded-full bg-mint shadow-[0_0_12px_#7ee0b0]" />
-              Consultoria contábil
-            </div>
-            <h1 className="hero-title m-0 text-balance text-[clamp(44px,7vw,92px)] font-medium leading-[0.98] tracking-[-0.035em]">
-              Contabilidade clara para empresas que <span className="serif-italic">querem crescer.</span>
-            </h1>
-          </div>
+          <h1 className="hero-title m-0 text-balance text-[clamp(44px,7vw,92px)] font-medium leading-[0.98] tracking-[-0.035em]">
+            {t.hero.title} <span className="serif-italic">{t.hero.accent}</span>
+          </h1>
 
           <div className="hero-card glass-strong w-full max-w-[460px] justify-self-end rounded-[28px] p-7">
             <p className="m-0 mb-6 text-pretty text-lg leading-[1.5] text-fog/90">
-              Cuidamos da contabilidade, dos impostos e da folha da sua empresa, com atendimento próximo e relatórios
-              que você entende.
+              {t.hero.text}
             </p>
             <div className="flex flex-wrap gap-2.5">
               <a
@@ -90,7 +85,7 @@ export function Hero({ play }: Props) {
                 onClick={(e) => go(e, '#contato')}
                 className="relative block whitespace-nowrap rounded-full bg-fog px-[22px] py-3.5 text-[15px] font-semibold text-[#0a0a0a] transition-colors hover:bg-white"
               >
-                Solicitar proposta
+                {t.hero.primaryCta}
                 <CursorGlow />
               </a>
               <a
@@ -98,11 +93,16 @@ export function Hero({ play }: Props) {
                 onClick={(e) => go(e, '#servicos')}
                 className="relative block whitespace-nowrap rounded-full border border-white/25 bg-white/[0.12] px-[22px] py-3.5 text-[15px] font-medium transition-colors hover:bg-white/20"
               >
-                Ver serviços
+                {t.hero.secondaryCta}
                 <CursorGlow />
               </a>
             </div>
           </div>
+        </div>
+
+        {/* ocupa a folga de 120px embaixo do conteúdo, então aparece já na primeira tela */}
+        <div data-intro className="hero-logos absolute inset-x-0 bottom-0 px-6">
+          <ClientLogos className="container-site border-t border-white/10 py-5 md:py-7" />
         </div>
       </div>
     </StackSection>

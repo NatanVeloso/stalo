@@ -2,10 +2,11 @@ import { useRef } from 'react'
 import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { results } from '../data/content'
+import { t } from '../i18n'
 
 function Stars() {
   return (
-    <div className="stars mb-5 flex gap-1 text-[#f5a524]" aria-label="5 de 5 estrelas">
+    <div className="stars mb-5 flex gap-1 text-[#f5a524]" aria-label={t.results.starsLabel}>
       {Array.from({ length: 5 }, (_, i) => (
         <svg key={i} width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" />
