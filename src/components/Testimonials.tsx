@@ -134,7 +134,7 @@ export function Testimonials() {
           className="bg absolute -inset-[8%] bg-cover bg-center will-change-transform"
           style={{ backgroundImage: `url(${results.background})` }}
         >
-          <BackgroundVideo src={videos.results} />
+          <BackgroundVideo src={videos.results} poster={results.background} />
         </div>
         <div className="absolute inset-0 bg-ink/70" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--color-ink)_0%,transparent_28%,transparent_72%,var(--color-ink)_100%)]" />

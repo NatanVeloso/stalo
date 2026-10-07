@@ -137,7 +137,7 @@ export const footerLinks = [
 ]
 
 export const images = {
-  hero: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80',
+  hero: '/videos/hero-poster.jpg', // primeiro quadro de videos.hero
   about: '/sobre.webp',
   contact: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80',
 }
