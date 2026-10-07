@@ -37,6 +37,7 @@ export const ptBR = {
     about: 'Sobre',
     process: 'Como funciona',
     faq: 'FAQ',
+    blog: 'Blog',
     contact: 'Contato',
   },
 
@@ -144,6 +145,49 @@ export const ptBR = {
     accent: 'negócios.',
     lead: 'O que nossos clientes dizem.',
     starsLabel: '5 de 5 estrelas',
+    prev: 'Depoimento anterior',
+    next: 'Próximo depoimento',
+    /**
+     * PLACEHOLDER: os oito depoimentos abaixo são textos de exemplo, sem cliente
+     * real por trás. Trocar por depoimentos verdadeiros (nome, empresa, foto)
+     * antes de publicar; avaliação inventada apresentada como real é problema
+     * legal e de reputação.
+     */
+    placeholderAuthor: 'Cliente Stalo',
+    placeholders: [
+      {
+        text: 'Pela primeira vez fechamos o mês sabendo exatamente quanto sobrou e por quê. O relatório chega antes de a gente pedir.',
+        company: 'Comércio varejista',
+      },
+      {
+        text: 'A migração foi tranquila: nenhuma obrigação atrasou e em duas semanas a equipe já falava direto com o nosso responsável.',
+        company: 'Clínica de saúde',
+      },
+      {
+        text: 'O planejamento tributário pagou o ano inteiro de honorários nos primeiros meses. E com segurança, sem improviso.',
+        company: 'Indústria',
+      },
+      {
+        text: 'Deixamos de decidir pelo saldo do banco. Hoje temos projeção de caixa e cada contratação é feita com número na mesa.',
+        company: 'Tecnologia',
+      },
+      {
+        text: 'A folha de pagamento virou rotina invisível: tudo no prazo, sem retrabalho e sem susto com fiscalização.',
+        company: 'Serviços',
+      },
+      {
+        text: 'Recuperamos tributos que nem sabíamos que tínhamos direito. A análise do histórico foi minuciosa.',
+        company: 'Construção civil',
+      },
+      {
+        text: 'Atendimento direto faz diferença: a resposta vem de quem conhece a nossa operação, não de um balcão.',
+        company: 'Agronegócio',
+      },
+      {
+        text: 'Os indicadores mensais mudaram a conversa dos sócios. Saímos do achismo e passamos a discutir estratégia.',
+        company: 'Educação',
+      },
+    ],
     quotes: {
       emanoel:
         'Com a Stalo descobrimos clareza, organização e previsibilidade. Hoje tomamos decisões com segurança e enxergamos nosso negócio de forma estratégica.',
@@ -209,6 +253,7 @@ export const ptBR = {
       process: 'Como Funciona',
       contact: 'Contato',
       faq: 'FAQ',
+      blog: 'Blog',
     },
   },
 
@@ -228,6 +273,30 @@ export const ptBR = {
     accept: 'Aceitar',
     reject: 'Recusar',
     manage: 'Preferências de cookies',
+  },
+
+  /** Blog alimentado pelo Instagram (Blog.tsx, BlogPage.tsx, PostPage.tsx). */
+  blog: {
+    eyebrow: 'Blog',
+    pageTitle: 'Blog',
+    title: 'Conteúdo direto do nosso',
+    accent: 'Instagram.',
+    lead: 'Dicas, novidades e bastidores da Stalo, publicados primeiro no Instagram e reunidos aqui.',
+    viewAll: 'Ver todas as publicações',
+    follow: 'Seguir no Instagram',
+    readMore: 'Ler publicação',
+    openOnInstagram: 'Abrir no Instagram',
+    watchOnInstagram: 'Assistir no Instagram',
+    back: 'Voltar ao blog',
+    loadMore: 'Carregar mais',
+    empty: 'Nenhuma publicação por enquanto.',
+    error: 'Não foi possível carregar as publicações agora.',
+    notFound: 'Publicação não encontrada.',
+    video: 'Vídeo',
+    carousel: 'Carrossel',
+    likes: 'curtidas',
+    comments: 'comentários',
+    originalLanguage: 'Publicação original em português.',
   },
 
   legal: {

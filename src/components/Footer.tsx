@@ -1,5 +1,5 @@
 import { useRef, type MouseEvent } from 'react'
-import { gsap, useGSAP } from '../lib/gsap'
+import { gsap, useGSAP, ScrollTrigger, heavy } from '../lib/gsap'
 import { contact, footerLinks } from '../data/content'
 import { company } from '../data/company'
 import { t, legal, legalHref } from '../i18n'
@@ -29,12 +29,45 @@ export function Footer() {
   useGSAP(
     () => {
       const q = gsap.utils.selector(root)
-      gsap.from(q('.panel'), {
-        y: 50,
-        autoAlpha: 0,
-        duration: 1.2,
-        scrollTrigger: { trigger: root.current, start: 'top 90%', once: true },
-      })
+
+      // entrada do painel. Modo leve: sobe e aparece. Modo full: "footer bounce"
+      // (demos.gsap.com): quanto mais rápido o scroll chega ao fim da página, mais
+      // o painel chega amassado e balança (elastic) antes de assentar.
+      const settle = () => {
+        gsap.from(q('.panel'), {
+          y: 50,
+          autoAlpha: 0,
+          duration: 1.2,
+          scrollTrigger: { trigger: root.current, start: 'top 90%', once: true },
+        })
+      }
+      heavy(
+        () => {
+          gsap.set(q('.panel'), { autoAlpha: 0 })
+          ScrollTrigger.create({
+            trigger: root.current,
+            start: 'top 90%',
+            once: true,
+            onEnter: (self) => {
+              // 0 = devagar, 1 = muito rápido (~5000 px/s); dita o amassado e a força do balanço
+              const v = gsap.utils.clamp(0, 1, Math.abs(self.getVelocity()) / 5000)
+              const panel = q('.panel')
+              gsap.to(panel, { autoAlpha: 1, duration: 0.5, overwrite: 'auto' })
+              gsap.fromTo(
+                panel,
+                { y: 50 + 70 * v, scaleY: 1 - 0.22 * v, transformOrigin: '50% 100%' },
+                {
+                  y: 0,
+                  scaleY: 1,
+                  duration: 1.4 + 0.6 * v,
+                  ease: `elastic.out(${1 + 0.5 * v}, ${0.8 - 0.4 * v})`,
+                },
+              )
+            },
+          })
+        },
+        { lite: settle, scope: root },
+      )
       gsap.from(q('.social'), {
         scale: 0.6,
         autoAlpha: 0,

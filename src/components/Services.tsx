@@ -3,7 +3,6 @@ import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { services, servicesCta, marquee } from '../data/content'
 import { t } from '../i18n'
-import { StackSection } from './StackSection'
 import { Marquee } from './Marquee'
 import { CursorGlow } from './CursorGlow'
 
@@ -44,8 +43,8 @@ export function Services() {
   )
 
   return (
-    <StackSection id="servicos" z={2} innerClassName="bg-paper text-navy">
-      <div ref={root} className="relative flex-1 pb-28 md:pb-36">
+    // divide o cartão empilhado com o "Sobre" (ver App.tsx): mesma cor, sem transição entre os dois
+    <section id="servicos" ref={root} className="relative pb-24 md:pb-28">
         <Marquee items={marquee} tone="light" />
 
         <div className="blob-a pointer-events-none absolute -left-[120px] top-[80px] h-[520px] w-[520px] rounded-full bg-blue opacity-[0.18] blur-[140px]" />
@@ -112,8 +111,7 @@ export function Services() {
             </a>
           </div>
         </div>
-      </div>
-    </StackSection>
+    </section>
   )
 }
 

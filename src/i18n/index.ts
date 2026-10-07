@@ -34,7 +34,15 @@ const labels: Record<Locale, { short: string; name: string }> = {
   es: { short: 'ES', name: 'Español' },
 }
 
-export type Page = { kind: 'home' } | { kind: 'legal'; key: LegalKey }
+/** Segmento do blog na URL, igual nos três idiomas: /blog, /en/blog, /es/blog/<slug>. */
+const BLOG_SLUG = 'blog'
+const POST_PATH = new RegExp(`^${BLOG_SLUG}/([a-z0-9]+(?:-[a-z0-9]+)*)$`)
+
+export type Page =
+  | { kind: 'home' }
+  | { kind: 'legal'; key: LegalKey }
+  | { kind: 'blog' }
+  | { kind: 'post'; slug: string }
 
 /** Qualquer caminho que não seja uma página legal cai no site de página única. */
 function resolve(pathname: string): { locale: Locale; page: Page } {
@@ -44,7 +52,11 @@ function resolve(pathname: string): { locale: Locale; page: Page } {
   const rest = (found ? segments.slice(1) : segments).join('/')
   const docs = legalDocs[locale]
   const key = (Object.keys(docs) as LegalKey[]).find((k) => docs[k].slug === rest)
-  return { locale, page: key ? { kind: 'legal', key } : { kind: 'home' } }
+  if (key) return { locale, page: { kind: 'legal', key } }
+  if (rest === BLOG_SLUG) return { locale, page: { kind: 'blog' } }
+  const post = POST_PATH.exec(rest)
+  if (post) return { locale, page: { kind: 'post', slug: post[1] } }
+  return { locale, page: { kind: 'home' } }
 }
 
 const current = resolve(window.location.pathname)
@@ -64,11 +76,33 @@ export function legalHref(key: LegalKey, l: Locale = locale) {
   return `${prefixes[l] ? '/' + prefixes[l] : ''}/${legalDocs[l][key].slug}`
 }
 
+export function blogHref(l: Locale = locale) {
+  return `${prefixes[l] ? '/' + prefixes[l] : ''}/${BLOG_SLUG}`
+}
+
+export function postHref(slug: string, l: Locale = locale) {
+  return `${blogHref(l)}/${slug}`
+}
+
+/** A mesma página em outro idioma. */
+export function pageHref(p: Page, l: Locale = locale) {
+  switch (p.kind) {
+    case 'legal':
+      return legalHref(p.key, l)
+    case 'blog':
+      return blogHref(l)
+    case 'post':
+      return postHref(p.slug, l)
+    default:
+      return homeHref(l)
+  }
+}
+
 /** A página atual em cada idioma: alimenta o seletor de idioma e as tags hreflang. */
 export const localeOptions = locales.map((l) => ({
   locale: l,
   ...labels[l],
-  href: page.kind === 'legal' ? legalHref(page.key, l) : homeHref(l),
+  href: pageHref(page, l),
 }))
 
 /**
@@ -92,6 +126,6 @@ export function applyDocumentMeta() {
   // canonical sempre no domínio definitivo, mesmo com o site servido de outro host
   const canonical = document.createElement('link')
   canonical.rel = 'canonical'
-  canonical.href = company.url + (page.kind === 'legal' ? legalHref(page.key) : homeHref())
+  canonical.href = company.url + pageHref(page)
   document.head.append(canonical)
 }

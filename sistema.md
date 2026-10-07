@@ -30,9 +30,13 @@ src/
     perf.ts           modo full/lite
     reveal.ts         `revealLines()`: título que sobe linha a linha
     consent.ts        consentimento de cookies; pixel.ts só carrega com aceite
+    posts.ts          cliente da API do blog (tipos + fetch)
   hooks/useLiquidGlass.ts
   components/         uma section ou peça de UI por arquivo
+    Blog*.tsx, Post*  blog: section da home, /blog e /blog/:slug
+    PageHeader/Footer cabeçalho e rodapé das páginas estáticas
   index.css           tokens (@theme), utilities de vidro, overrides do modo lite
+api/                  backend NestJS do blog (ver "Blog e API"), com README próprio
 ```
 
 ## Componentes
@@ -43,6 +47,8 @@ src/
 - **Estilo é Tailwind inline.** Só vai para `index.css` o que não cabe em classe: tokens de cor, utilities compartilhadas (`glass`, `container-site`, `serif-italic`) e regras que dependem de `data-perf` ou de pseudo-elementos.
 - **Cores:** use os tokens (`bg-ink`, `text-fog`, `bg-navy`, `text-mint`...). Hex solto só quando a cor é específica de uma peça, como os tons da foto no card do "Sobre".
 - **Acessibilidade:** `aria-label` em link/botão só com ícone (traduzido), `alt=""` em imagem decorativa, `aria-hidden` em SVG decorativo, foco visível em controles.
+- **Fundos em vídeo:** `videos` em `data/content.ts` + `BackgroundVideo` dentro do elemento que tem a imagem de fundo (hero e "Resultados"). Vazio = só a imagem. O componente não renderiza no modo `lite` nem com "reduzir movimento"; a imagem é o fallback e o poster.
+- **Depoimentos:** carrossel nativo (scroll-snap + setas + arraste pelo mouse via `hooks/useDragScroll.ts`, reutilizável em qualquer scroller horizontal) em `Testimonials.tsx`, dados em `results.testimonials`. Oito dos dez são PLACEHOLDERS (`t.results.placeholders`) e precisam virar depoimentos reais antes de publicar.
 
 ### Sections empilhadas (`StackSection`)
 
@@ -50,7 +56,8 @@ src/
 
 - cada `StackSection` recebe um `z` maior que o da anterior;
 - precisa ter pelo menos 100vh (o `min-h-screen` interno garante); mais baixa que isso, duas sections ficam presas ao mesmo tempo;
-- a última não é fixada. Blocos que não precisam do efeito entram dentro de um `StackSection` existente (FAQ, Depoimentos e Rodapé dividem o último; o carrossel de logos de clientes, `ClientLogos.tsx`, fica na base da hero e lê a lista `clients` de `data/content.ts`).
+- a última não é fixada. Blocos que não precisam do efeito entram dentro de um `StackSection` existente (FAQ, Depoimentos e Rodapé dividem o último; o carrossel de logos de clientes, `ClientLogos.tsx`, fica na base da hero e lê a lista `clients` de `data/content.ts`);
+- a transição só funciona bem entre cores diferentes: um cartão claro deslizando sobre outro claro fica sujo. Por isso Serviços e Sobre dividem um cartão, separados pelo corte diagonal do `SectionDivider` (o tom `paper-2` do Sobre é o que desenha o corte).
 
 ## Tradução (pt-BR, en, es)
 
@@ -77,6 +84,20 @@ Convenções:
 - `applyDocumentMeta()` ajusta `<html lang>`, título, descrição, hreflang e canonical em runtime; o `index.html` sai em português.
 
 Idioma novo: adicione em `locales`, `prefixes`, `dictionaries`, `legalDocs` e `labels` de `src/i18n/index.ts` e crie os dois arquivos. O servidor precisa devolver `index.html` para qualquer caminho (fallback de SPA).
+
+## Blog e API
+
+O blog é o Instagram da Stalo republicado: o backend em `api/` (NestJS 12 + SQLite via Drizzle) sincroniza as publicações pela Graph API, baixa as imagens e serve tudo em `/api/posts`; o site só lê. Detalhes de endpoints, variáveis e token em `api/README.md`.
+
+- **Páginas:** section `Blog` na home (últimas 3), `/blog` (lista com "carregar mais") e `/blog/:slug`, nos três idiomas (`/en/blog`, `/es/blog/...`). As rotas e os hrefs (`blogHref`, `postHref`, `pageHref`) ficam em `src/i18n/index.ts`, como as páginas legais.
+- **Home carrega os posts antes de renderizar** (`fetchHomePosts` em `main.tsx`, teto de 1,5 s). Motivo: os pins das sections são medidos na montagem; uma section que aparecesse depois quebraria o scroll. Sem API ou sem posts, a home sobe sem a section e os `z` das demais continuam válidos.
+- **Páginas estáticas novas** (`BlogPage`, `PostPage`) seguem o padrão da `LegalPage`: sem GSAP, `PageHeader` + `PageFooter`, `hideBoot()` ao montar (senão o logo de carregamento do `index.html` cobre a tela), `<CookieConsent />` montado, `document.title` próprio.
+- **Links de página no menu:** `nav` em `data/content.ts` aceita hrefs que não são âncora (ex.: `/blog`); `Header.tsx` só cria ScrollTrigger e intercepta o clique para hrefs que começam com `#`.
+- **Caminhos relativos:** o site chama `/api` e `/media` na própria origem. Em dev o `vite.config.ts` faz proxy para a API na porta 3000; em produção o nginx precisa fazer o mesmo (`location /api` e `location /media` para o Nest).
+- **Conteúdo é em português:** as legendas vêm do Instagram como estão. Em `/en` e `/es` a página do post avisa isso (`t.blog.originalLanguage`); a interface em volta é traduzida normalmente.
+- **Convenção da legenda** (em `api/src/common/utils/caption.ts`): primeira linha vira título, o resto é o corpo, linhas finais só de hashtags viram etiquetas. Quem escreve o post no Instagram controla como ele aparece no site.
+- **Vídeos:** a thumbnail é a capa e o botão de play abre o Instagram. Só com `SYNC_DOWNLOAD_VIDEOS=true` na API (desligado por padrão) o mp4 é baixado e toca no site (`<video>` em `PostPage`, quando `videoUrl` vem preenchido). Cards sem imagem mostram um fundo de marca, não uma caixa vazia.
+- **Sem token** a API sobe e serve o que está no banco. Para desenvolver: `cd api && npm run build && npm run seed` grava a publicação de exemplo de `api/seed/`.
 
 ## Performance: modo `full` e modo `lite`
 
@@ -136,3 +157,4 @@ Quando usar:
 - Texto novo existe nos três idiomas; conferido em `/`, `/en` e `/es`.
 - Efeito novo conferido com `?perf=full` e `?perf=lite`, e em largura de celular.
 - Nada de texto fixo em componente, link interno com caminho fixo ou `backdrop-filter` sem override no `lite`.
+- Mexeu em `api/`: `npm test` e `npm run build` lá dentro passam; segredo novo entrou em `.env.example` (sem valor) e no schema de `config/env.ts`.

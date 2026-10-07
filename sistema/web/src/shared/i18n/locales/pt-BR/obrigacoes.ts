@@ -1,0 +1,28 @@
+export const obrigacoes = {
+  title: 'Obrigações',
+  subtitle: 'Entregas fiscais, contábeis e trabalhistas por competência.',
+  new: 'Nova obrigação',
+  tabs: { todas: 'Todas', pendentes: 'Pendentes', atrasadas: 'Atrasadas', entregues: 'Entregues' },
+  columns: {
+    obrigacao: 'Obrigação',
+    cliente: 'Cliente',
+    competencia: 'Competência',
+    vencimento: 'Vencimento',
+    responsavel: 'Responsável',
+    status: 'Status',
+  },
+  summary: { pendentes: '{n} pendentes', atrasadas: '{n} atrasadas', entregues: '{n} entregues no mês' },
+  markDelivered: 'Marcar como entregue',
+  tipos: {
+    DAS: 'DAS',
+    DCTF: 'DCTF',
+    EFD: 'EFD Contribuições',
+    SPED: 'SPED Fiscal',
+    GFIP: 'GFIP',
+    ESOCIAL: 'eSocial',
+    DEFIS: 'DEFIS',
+    ECD: 'ECD',
+    DIRF: 'DIRF',
+    FOLHA: 'Folha de pagamento',
+  },
+}

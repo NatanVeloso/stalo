@@ -1,7 +1,7 @@
 import { useRef, useState, type MouseEvent } from 'react'
 import { gsap, useGSAP, ScrollTrigger, ScrollSmoother } from '../lib/gsap'
 import { nav, contact } from '../data/content'
-import { t } from '../i18n'
+import { blogHref, t } from '../i18n'
 import { useLiquidGlass } from '../hooks/useLiquidGlass'
 import { Logo } from './Logo'
 import { CursorGlow } from './CursorGlow'
@@ -41,12 +41,18 @@ export function Header({ show }: Props) {
       end: 'max',
       onToggle: (self) => setScrolled(self.isActive),
     })
+    // âncoras da própria página e o link do blog (página /blog), que aqui acompanha a section #blog
     nav.forEach(({ href }) => {
+      const target = href.startsWith('#') ? href : href === blogHref() ? '#blog' : null
+      if (!target || !document.querySelector(target)) return
       ScrollTrigger.create({
-        trigger: href,
+        trigger: target,
         // clamp: o rodapé (#contato) é baixo e nunca chega a 45% da tela; assim ele ativa no fim da página
         start: 'clamp(top 45%)',
         end: 'bottom 45%',
+        // calcula depois dos pins das sections (o do "Como funciona" empurra a página); sem isso as
+        // posições ficavam adiantadas e o FAQ acendia com o Blog ainda na tela
+        refreshPriority: -1,
         onToggle: (self) => self.isActive && setActive(href),
       })
     })
@@ -69,8 +75,9 @@ export function Header({ show }: Props) {
   })
 
   const go = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
     if (open) toggle(false)
+    if (!href.startsWith('#')) return // link de página (ex.: /blog): navegação normal
+    e.preventDefault()
     scrollToAnchor(href)
   }
 
@@ -131,13 +138,13 @@ export function Header({ show }: Props) {
           </a>
 
           {/* entre md e lg os 5 links dividem a pílula com o CTA: fonte e espaçamento menores para caber numa linha */}
-          <div className="hidden items-center gap-4 text-sm md:flex lg:gap-7 lg:text-[15px]">
+          <div className="hidden items-center gap-3 text-[13px] md:flex lg:gap-6 lg:text-[15px]">
             {nav.map(({ label, href }) => (
               <a
                 key={href}
                 href={href}
                 onClick={(e) => go(e, href)}
-                className={`relative whitespace-nowrap py-1 transition-colors duration-300 hover:text-sky ${
+                className={`relative whitespace-nowrap rounded-md py-1 outline-none transition-colors duration-300 hover:text-sky focus-visible:text-sky focus-visible:ring-1 focus-visible:ring-sky/60 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent ${
                   active === href ? 'text-fog' : 'text-fog/75'
                 }`}
               >

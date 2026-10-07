@@ -25,6 +25,7 @@ export const en: Dictionary = {
     about: 'About',
     process: 'How it works',
     faq: 'FAQ',
+    blog: 'Blog',
     contact: 'Contact',
   },
 
@@ -133,6 +134,43 @@ export const en: Dictionary = {
     accent: 'businesses.',
     lead: 'What our clients say.',
     starsLabel: '5 out of 5 stars',
+    prev: 'Previous testimonial',
+    next: 'Next testimonial',
+    placeholderAuthor: 'Stalo client',
+    placeholders: [
+      {
+        text: 'For the first time we close the month knowing exactly what was left and why. The report arrives before we ask.',
+        company: 'Retail',
+      },
+      {
+        text: 'The migration was smooth: nothing was filed late and within two weeks the team was talking directly to our contact.',
+        company: 'Healthcare clinic',
+      },
+      {
+        text: 'Tax planning paid for a whole year of fees in the first few months. Safely, with no improvisation.',
+        company: 'Manufacturing',
+      },
+      {
+        text: 'We stopped deciding by the bank balance. Now we have a cash forecast and every hire is made with numbers on the table.',
+        company: 'Technology',
+      },
+      {
+        text: 'Payroll became an invisible routine: everything on time, no rework and no surprises from inspections.',
+        company: 'Services',
+      },
+      {
+        text: 'We recovered taxes we did not even know we were owed. The review of our history was meticulous.',
+        company: 'Construction',
+      },
+      {
+        text: 'Direct service makes a difference: answers come from someone who knows our operation, not from a help desk.',
+        company: 'Agribusiness',
+      },
+      {
+        text: 'The monthly indicators changed the conversation between partners. We left guesswork behind and started discussing strategy.',
+        company: 'Education',
+      },
+    ],
     quotes: {
       emanoel:
         'With Stalo we found clarity, organization and predictability. Today we make decisions with confidence and see our business strategically.',
@@ -197,6 +235,7 @@ export const en: Dictionary = {
       process: 'How It Works',
       contact: 'Contact',
       faq: 'FAQ',
+      blog: 'Blog',
     },
   },
 
@@ -214,6 +253,29 @@ export const en: Dictionary = {
     accept: 'Accept',
     reject: 'Decline',
     manage: 'Cookie preferences',
+  },
+
+  blog: {
+    eyebrow: 'Blog',
+    pageTitle: 'Blog',
+    title: 'Straight from our',
+    accent: 'Instagram.',
+    lead: 'Tips, news and behind the scenes at Stalo, published first on Instagram and gathered here.',
+    viewAll: 'See all posts',
+    follow: 'Follow on Instagram',
+    readMore: 'Read post',
+    openOnInstagram: 'Open on Instagram',
+    watchOnInstagram: 'Watch on Instagram',
+    back: 'Back to blog',
+    loadMore: 'Load more',
+    empty: 'No posts yet.',
+    error: 'We couldn’t load the posts right now.',
+    notFound: 'Post not found.',
+    video: 'Video',
+    carousel: 'Carousel',
+    likes: 'likes',
+    comments: 'comments',
+    originalLanguage: 'Original post in Portuguese.',
   },
 
   legal: {

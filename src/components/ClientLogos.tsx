@@ -9,9 +9,9 @@ type Props = { className?: string }
 const REPEAT = 4
 
 /**
- * Carrossel infinito com os logos dos clientes, na base da hero. A faixa tem
- * duas metades iguais e anda até -50%, então o laço fecha sem emenda. Os logos
- * são arquivos claros, feitos para fundo escuro.
+ * Carrossel infinito com os logos dos clientes, na base da hero, de ponta a
+ * ponta da tela. A faixa tem duas metades iguais e anda até -50%, então o laço
+ * fecha sem emenda. Os logos são arquivos claros, feitos para fundo escuro.
  */
 export function ClientLogos({ className = '' }: Props) {
   const root = useRef<HTMLDivElement>(null)
@@ -44,9 +44,10 @@ export function ClientLogos({ className = '' }: Props) {
   )
 
   return (
-    <div ref={root} className={`flex flex-col gap-3 md:flex-row md:items-center md:gap-10 ${className}`}>
-      <p className="m-0 shrink-0 text-[12px] uppercase tracking-[0.14em] text-fog/60">{t.clients.label}</p>
-      <div className="min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_10%,#000_90%,transparent)] md:flex-1">
+    <div ref={root} className={`flex flex-col gap-4 ${className}`}>
+      <p className="m-0 px-6 text-center text-[12px] uppercase tracking-[0.14em] text-fog/60">{t.clients.label}</p>
+      {/* 100% da largura: só as pontas esmaecem, para os logos não "baterem" na borda da tela */}
+      <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]">
         <div className="track flex w-max will-change-transform">
           {[0, 1].map((half) => (
             <div key={half} className="flex shrink-0 items-center" aria-hidden={half === 1}>
@@ -58,7 +59,7 @@ export function ClientLogos({ className = '' }: Props) {
                     src={c.src}
                     alt={half === 0 && rep === 0 ? c.name : ''}
                     decoding="async"
-                    className="mx-7 h-8 w-auto max-w-[120px] object-contain opacity-75 md:mx-10 md:h-9 md:max-w-[140px]"
+                    className="mx-8 h-8 w-auto max-w-[120px] object-contain opacity-75 md:mx-12 md:h-9 md:max-w-[140px]"
                   />
                 )),
               )}

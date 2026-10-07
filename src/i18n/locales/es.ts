@@ -25,6 +25,7 @@ export const es: Dictionary = {
     about: 'Nosotros',
     process: 'Cómo funciona',
     faq: 'FAQ',
+    blog: 'Blog',
     contact: 'Contacto',
   },
 
@@ -134,6 +135,43 @@ export const es: Dictionary = {
     accent: 'negocios.',
     lead: 'Lo que dicen nuestros clientes.',
     starsLabel: '5 de 5 estrellas',
+    prev: 'Testimonio anterior',
+    next: 'Siguiente testimonio',
+    placeholderAuthor: 'Cliente Stalo',
+    placeholders: [
+      {
+        text: 'Por primera vez cerramos el mes sabiendo exactamente cuánto sobró y por qué. El informe llega antes de que lo pidamos.',
+        company: 'Comercio minorista',
+      },
+      {
+        text: 'La migración fue tranquila: ninguna obligación se atrasó y en dos semanas el equipo ya hablaba directo con nuestro responsable.',
+        company: 'Clínica de salud',
+      },
+      {
+        text: 'La planificación tributaria pagó todo el año de honorarios en los primeros meses. Y con seguridad, sin improvisar.',
+        company: 'Industria',
+      },
+      {
+        text: 'Dejamos de decidir por el saldo del banco. Hoy tenemos proyección de caja y cada contratación se hace con números sobre la mesa.',
+        company: 'Tecnología',
+      },
+      {
+        text: 'La nómina se volvió una rutina invisible: todo a tiempo, sin retrabajo y sin sustos con la fiscalización.',
+        company: 'Servicios',
+      },
+      {
+        text: 'Recuperamos tributos que ni sabíamos que nos correspondían. El análisis del historial fue minucioso.',
+        company: 'Construcción',
+      },
+      {
+        text: 'La atención directa marca la diferencia: la respuesta viene de quien conoce nuestra operación, no de un mostrador.',
+        company: 'Agronegocio',
+      },
+      {
+        text: 'Los indicadores mensuales cambiaron la conversación entre los socios. Salimos de las suposiciones y pasamos a discutir estrategia.',
+        company: 'Educación',
+      },
+    ],
     quotes: {
       emanoel:
         'Con Stalo descubrimos claridad, organización y previsibilidad. Hoy tomamos decisiones con seguridad y vemos nuestro negocio de forma estratégica.',
@@ -198,6 +236,7 @@ export const es: Dictionary = {
       process: 'Cómo Funciona',
       contact: 'Contacto',
       faq: 'FAQ',
+      blog: 'Blog',
     },
   },
 
@@ -215,6 +254,29 @@ export const es: Dictionary = {
     accept: 'Aceptar',
     reject: 'Rechazar',
     manage: 'Preferencias de cookies',
+  },
+
+  blog: {
+    eyebrow: 'Blog',
+    pageTitle: 'Blog',
+    title: 'Contenido directo de nuestro',
+    accent: 'Instagram.',
+    lead: 'Consejos, novedades y el detrás de escena de Stalo, publicados primero en Instagram y reunidos aquí.',
+    viewAll: 'Ver todas las publicaciones',
+    follow: 'Seguir en Instagram',
+    readMore: 'Leer publicación',
+    openOnInstagram: 'Abrir en Instagram',
+    watchOnInstagram: 'Ver en Instagram',
+    back: 'Volver al blog',
+    loadMore: 'Cargar más',
+    empty: 'Todavía no hay publicaciones.',
+    error: 'No pudimos cargar las publicaciones ahora.',
+    notFound: 'Publicación no encontrada.',
+    video: 'Vídeo',
+    carousel: 'Carrusel',
+    likes: 'me gusta',
+    comments: 'comentarios',
+    originalLanguage: 'Publicación original en portugués.',
   },
 
   legal: {

@@ -1,0 +1,22 @@
+export const auth = {
+  title: 'Entrar',
+  subtitle: 'Acesse o sistema da Stalo com sua conta.',
+  email: 'E-mail',
+  emailPlaceholder: 'voce@empresa.com.br',
+  password: 'Senha',
+  passwordPlaceholder: 'Sua senha',
+  remember: 'Manter conectado',
+  forgot: 'Esqueci a senha',
+  submit: 'Entrar',
+  submitting: 'Entrando...',
+  demoTitle: 'Entrar como (demonstração)',
+  demoHint: 'Escolha um perfil para preencher as credenciais.',
+  errors: {
+    emailRequired: 'Informe o e-mail.',
+    emailInvalid: 'E-mail inválido.',
+    passwordRequired: 'Informe a senha.',
+    passwordMin: 'A senha tem pelo menos 6 caracteres.',
+    invalid: 'E-mail ou senha incorretos.',
+  },
+  footer: 'Acesso restrito. Atividades são registradas.',
+}

@@ -1,4 +1,4 @@
-import { t, type Dictionary } from '../i18n'
+import { blogHref, t, type Dictionary } from '../i18n'
 import { company } from './company'
 
 /**
@@ -11,6 +11,7 @@ export const nav = [
   { label: t.nav.services, href: '#servicos' },
   { label: t.nav.about, href: '#sobre' },
   { label: t.nav.process, href: '#processo' },
+  { label: t.nav.blog, href: blogHref() },
   { label: t.nav.faq, href: '#faq' },
   { label: t.nav.contact, href: '#contato' },
 ]
@@ -81,16 +82,7 @@ export const steps = stepMedia.map(({ id, ...media }, i) => ({
   ...t.process.steps[id],
 }))
 
-export type ResultItem =
-  | { kind: 'logo'; name: string; src: string; /** colunas no grid de 4 (desktop) */ span?: 1 | 2 }
-  | {
-      kind: 'quote'
-      text: string
-      author: string
-      company: string
-      avatar: string
-      span?: 1 | 2
-    }
+export type Testimonial = { text: string; author: string; company: string; avatar?: string }
 
 /**
  * Carrossel de logos na base da hero (ClientLogos.tsx). Cliente novo: basta
@@ -103,34 +95,33 @@ export const clients = [
   { name: 'Sky Consórcios', src: '/clientes/sky.avif' },
 ]
 
-/** Seção "Resultados": bento com logos de clientes e depoimentos (grid de 4 colunas no desktop). */
+/** Seção "Resultados": carrossel de depoimentos sobre a foto (ou vídeo) do escritório. */
 export const results = {
   title: t.results.title,
   accent: t.results.accent,
   lead: t.results.lead,
   background: '/clientes/escritorio-blur.webp',
-  items: [
-    { kind: 'logo', name: 'Supriloc', src: '/clientes/supriloc-branca.avif' },
-    { kind: 'logo', name: 'Lissen Fit Wear', src: '/clientes/lissen.avif' },
+  testimonials: [
     {
-      kind: 'quote',
-      span: 2,
       text: t.results.quotes.emanoel,
       author: 'Emanoel Oliveira',
       company: 'Gene Digital',
       avatar: '/clientes/emanoel-oliveira.avif',
     },
     {
-      kind: 'quote',
-      span: 2,
       text: t.results.quotes.walex,
       author: 'Walex Mateus',
       company: 'Jarbas.ai',
       avatar: '/clientes/walex-mateus.avif',
     },
-    { kind: 'logo', name: 'Tshirteria', src: '/clientes/tshirteria.avif' },
-    { kind: 'logo', name: 'Sky Consórcios', src: '/clientes/sky.avif' },
-  ] satisfies ResultItem[],
+    // PLACEHOLDERS (ver aviso em t.results.placeholders): trocar por depoimentos reais antes de publicar
+    ...t.results.placeholders.map((p) => ({
+      text: p.text,
+      author: t.results.placeholderAuthor,
+      company: p.company,
+      avatar: undefined,
+    })),
+  ] satisfies Testimonial[],
 }
 
 /** Seção "Perguntas frequentes" (sanfona), logo antes dos depoimentos. */
@@ -142,10 +133,22 @@ export const footerLinks = [
   { label: t.footer.links.process, href: '#processo' },
   { label: t.footer.links.contact, href: '#contato' },
   { label: t.footer.links.faq, href: '#faq' },
+  { label: t.footer.links.blog, href: blogHref() },
 ]
 
 export const images = {
   hero: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80',
   about: '/sobre.webp',
   contact: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80',
+}
+
+/**
+ * Vídeos de fundo (BackgroundVideo.tsx). Vazio = fica só a imagem de `images`
+ * / `results.background`, que também serve de poster enquanto o vídeo carrega
+ * e de fallback no modo leve. Coloque os arquivos em public/videos (mp4 H.264,
+ * sem áudio, de preferência até ~5 MB) e aponte aqui, ex.: '/videos/hero.mp4'.
+ */
+export const videos = {
+  hero: '/videos/hero.mp4',
+  results: '',
 }

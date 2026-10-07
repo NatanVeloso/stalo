@@ -1,0 +1,25 @@
+export const financeiro = {
+  title: 'Financeiro',
+  subtitle: 'Honorários, recebimentos e despesas do escritório.',
+  new: 'Novo lançamento',
+  kpis: { recebido: 'Recebido no mês', aReceber: 'A receber', vencido: 'Vencido', despesas: 'Despesas do mês' },
+  tabs: { todos: 'Todos', receitas: 'Receitas', despesas: 'Despesas' },
+  columns: {
+    descricao: 'Descrição',
+    cliente: 'Cliente',
+    categoria: 'Categoria',
+    vencimento: 'Vencimento',
+    valor: 'Valor',
+    status: 'Status',
+  },
+  tipos: { receita: 'Receita', despesa: 'Despesa' },
+  categorias: {
+    honorario: 'Honorário mensal',
+    abertura: 'Abertura de empresa',
+    consultoria: 'Consultoria',
+    software: 'Software',
+    aluguel: 'Aluguel',
+    folha: 'Folha interna',
+    outros: 'Outros',
+  },
+}

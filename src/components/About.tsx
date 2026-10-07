@@ -3,10 +3,9 @@ import { gsap, useGSAP, heavy } from '../lib/gsap'
 import { revealLines } from '../lib/reveal'
 import { values, stats, images } from '../data/content'
 import { t } from '../i18n'
-import { StackSection } from './StackSection'
 
 export function About() {
-  const root = useRef<HTMLDivElement>(null)
+  const root = useRef<HTMLElement>(null)
 
   useGSAP(
     () => {
@@ -81,8 +80,8 @@ export function About() {
   )
 
   return (
-    <StackSection id="sobre" z={3} innerClassName="bg-paper text-navy">
-      <div ref={root} className="relative flex flex-1 flex-col justify-center px-6 pb-28 pt-24 md:pb-36">
+    // tom um pouco mais escuro que o de "Serviços": é o que dá forma ao corte diagonal (SectionDivider)
+    <section id="sobre" ref={root} className="relative flex flex-col justify-center bg-paper-2 px-6 pb-28 pt-16 md:pb-36 md:pt-20">
         <svg
           viewBox="0 0 1200 500"
           fill="none"
@@ -148,7 +147,6 @@ export function About() {
             </div>
           ))}
         </div>
-      </div>
-    </StackSection>
+    </section>
   )
 }

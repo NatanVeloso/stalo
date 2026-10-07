@@ -1,10 +1,11 @@
 import { useRef, type MouseEvent } from 'react'
 import { gsap, useGSAP, SplitText, heavy } from '../lib/gsap'
-import { images } from '../data/content'
+import { videos } from '../data/content'
 import { t } from '../i18n'
 import { StackSection } from './StackSection'
 import { CursorGlow } from './CursorGlow'
 import { ClientLogos } from './ClientLogos'
+import { BackgroundVideo } from './BackgroundVideo'
 import { scrollToAnchor } from './Header'
 
 type Props = { play: boolean }
@@ -59,17 +60,19 @@ export function Hero({ play }: Props) {
 
   return (
     <StackSection id="top" z={1} rounded={false} innerClassName="bg-navy">
-      <div ref={root} className="relative flex min-h-screen items-end overflow-hidden px-6 pb-[120px] pt-[140px]">
+      <div ref={root} className="relative flex min-h-screen flex-col justify-end overflow-hidden px-6 pt-[140px]">
+        {/* sobe 24% além da section: o parallax de saída desce o fundo até 18% da altura e, sem a folga, abria uma faixa escura no topo (atrás do header) */}
         <div
-          className="hero-bg absolute inset-0 bg-[#1a2230] bg-cover bg-center will-change-transform"
-          style={{ backgroundImage: `url(${images.hero})` }}
-        />
+          className="hero-bg absolute inset-x-0 -top-[24%] bottom-0 bg-[#1a2230] will-change-transform"
+        >
+          <BackgroundVideo src={videos.hero} />
+        </div>
         {/* no mobile o texto sobe para cima do céu claro da foto, então o véu é mais forte */}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,18,32,0.3)_0%,rgba(11,18,32,0.15)_40%,rgba(11,18,32,0.95)_92%,#0b1220_100%)] max-md:bg-[linear-gradient(180deg,rgba(11,18,32,0.55)_0%,rgba(11,18,32,0.55)_30%,rgba(11,18,32,0.97)_80%,#0b1220_100%)]" />
 
         <div
           data-intro
-          className="container-site relative grid items-end gap-6 md:grid-cols-[1.2fr_minmax(0,460px)]"
+          className="container-site relative mb-10 grid items-end gap-6 md:mb-12 md:grid-cols-[1.2fr_minmax(0,460px)]"
         >
           <h1 className="hero-title m-0 text-balance text-[clamp(44px,7vw,92px)] font-medium leading-[0.98] tracking-[-0.035em]">
             {t.hero.title} <span className="serif-italic">{t.hero.accent}</span>
@@ -100,9 +103,9 @@ export function Hero({ play }: Props) {
           </div>
         </div>
 
-        {/* ocupa a folga de 120px embaixo do conteúdo, então aparece já na primeira tela */}
-        <div data-intro className="hero-logos absolute inset-x-0 bottom-0 px-6">
-          <ClientLogos className="container-site border-t border-white/10 py-5 md:py-7" />
+        {/* no fluxo, logo abaixo do conteúdo: absoluto numa folga fixa, a linha de cima invadia o cartão quando a faixa era mais alta que a folga */}
+        <div data-intro className="hero-logos relative -mx-6">
+          <ClientLogos className="border-t border-white/10 py-5 md:py-7" />
         </div>
       </div>
     </StackSection>

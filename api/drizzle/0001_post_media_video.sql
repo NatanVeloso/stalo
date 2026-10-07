@@ -1,0 +1,1 @@
+ALTER TABLE `post_media` ADD `video_path` text;

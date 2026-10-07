@@ -6,16 +6,24 @@ import { Hero } from './components/Hero'
 import { Services } from './components/Services'
 import { About } from './components/About'
 import { Process } from './components/Process'
+import { Blog } from './components/Blog'
 import { Testimonials } from './components/Testimonials'
 import { Faq } from './components/Faq'
 import { Footer } from './components/Footer'
 import { StackSection } from './components/StackSection'
+import { SectionDivider } from './components/SectionDivider'
 import { ScrollProgress } from './components/ScrollProgress'
 import { WhatsAppButton } from './components/WhatsAppButton'
 import { CookieConsent } from './components/CookieConsent'
 import { ConsultantInvite } from './components/ConsultantInvite'
+import type { PostSummary } from './lib/posts'
 
-export default function App() {
+type Props = {
+  /** Últimas publicações do Instagram; vazio = sem a section do blog. */
+  posts: PostSummary[]
+}
+
+export default function App({ posts }: Props) {
   const [intro, setIntro] = useState(false)
   const introDone = useCallback(() => setIntro(true), [])
 
@@ -86,10 +94,15 @@ export default function App() {
         <div id="smooth-content">
           <main>
             <Hero play={intro} />
-            <Services />
-            <About />
+            {/* Serviços e Sobre são claros: num cartão só, com corte diagonal, em vez de um cartão claro deslizando sobre outro */}
+            <StackSection z={2} innerClassName="bg-paper text-navy">
+              <Services />
+              <SectionDivider />
+              <About />
+            </StackSection>
             <Process />
-            <StackSection z={5} innerClassName="bg-ink">
+            {posts.length > 0 && <Blog posts={posts} />}
+            <StackSection z={6} innerClassName="bg-ink">
               <Faq />
               <Testimonials />
               <Footer />
