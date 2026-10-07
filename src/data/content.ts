@@ -144,11 +144,14 @@ export const images = {
 
 /**
  * Vídeos de fundo (BackgroundVideo.tsx). Vazio = fica só a imagem de `images`
- * / `results.background`, que também serve de poster enquanto o vídeo carrega
- * e de fallback no modo leve. Coloque os arquivos em public/videos (mp4 H.264,
- * sem áudio, de preferência até ~5 MB) e aponte aqui, ex.: '/videos/hero.mp4'.
+ * / `results.background`, que também serve de poster enquanto o vídeo carrega e
+ * de fallback com "reduzir movimento". Arquivos em public/videos: mp4 H.264 8 bits
+ * sem áudio (HEVC não toca no Android); a versão *Lite é a mesma cena menor, para
+ * o modo leve. Sem ffmpeg na máquina, o do CapCut serve (AppData/Local/CapCut/Apps).
  */
 export const videos = {
   hero: '/videos/hero.mp4',
+  /** mesma cena em 720p, só para o modo leve (máquina fraca) */
+  heroLite: '/videos/hero-720.mp4',
   results: '',
 }

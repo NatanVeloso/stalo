@@ -47,7 +47,7 @@ api/                  backend NestJS do blog (ver "Blog e API"), com README pró
 - **Estilo é Tailwind inline.** Só vai para `index.css` o que não cabe em classe: tokens de cor, utilities compartilhadas (`glass`, `container-site`, `serif-italic`) e regras que dependem de `data-perf` ou de pseudo-elementos.
 - **Cores:** use os tokens (`bg-ink`, `text-fog`, `bg-navy`, `text-mint`...). Hex solto só quando a cor é específica de uma peça, como os tons da foto no card do "Sobre".
 - **Acessibilidade:** `aria-label` em link/botão só com ícone (traduzido), `alt=""` em imagem decorativa, `aria-hidden` em SVG decorativo, foco visível em controles.
-- **Fundos em vídeo:** `videos` em `data/content.ts` + `BackgroundVideo` dentro do elemento que tem a imagem de fundo (hero e "Resultados"). Vazio = só a imagem. O componente não renderiza no modo `lite` nem com "reduzir movimento"; a imagem é o fallback e o poster.
+- **Fundos em vídeo:** `videos` em `data/content.ts` + `BackgroundVideo` dentro do elemento que tem a imagem de fundo (hero e "Resultados"). Vazio = só a imagem. A imagem é o poster. No modo `lite` toca a versão menor (`videos.heroLite`, 720p); com "reduzir movimento" fica só a imagem. O mp4 tem que ser H.264 8 bits sem áudio: HEVC (padrão de exportação do iPhone/CapCut) não toca no Chrome do Android.
 - **Depoimentos:** carrossel nativo (scroll-snap + setas + arraste pelo mouse via `hooks/useDragScroll.ts`, reutilizável em qualquer scroller horizontal) em `Testimonials.tsx`, dados em `results.testimonials`. Oito dos dez são PLACEHOLDERS (`t.results.placeholders`) e precisam virar depoimentos reais antes de publicar.
 
 ### Sections empilhadas (`StackSection`)

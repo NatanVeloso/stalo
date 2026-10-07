@@ -65,7 +65,7 @@ export function Hero({ play }: Props) {
         <div
           className="hero-bg absolute inset-x-0 -top-[24%] bottom-0 bg-[#1a2230] will-change-transform"
         >
-          <BackgroundVideo src={videos.hero} poster={images.hero} />
+          <BackgroundVideo src={videos.hero} liteSrc={videos.heroLite} poster={images.hero} />
         </div>
         {/* no mobile o texto sobe para cima do céu claro da foto, então o véu é mais forte */}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,18,32,0.3)_0%,rgba(11,18,32,0.15)_40%,rgba(11,18,32,0.95)_92%,#0b1220_100%)] max-md:bg-[linear-gradient(180deg,rgba(11,18,32,0.55)_0%,rgba(11,18,32,0.55)_30%,rgba(11,18,32,0.97)_80%,#0b1220_100%)]" />

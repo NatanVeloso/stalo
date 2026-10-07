@@ -4,22 +4,24 @@ import { usePerfLite } from '../lib/perf'
 type Props = {
   /** caminho do mp4 (ver `videos` em data/content.ts); vazio = não renderiza nada */
   src: string
-  /** imagem do primeiro quadro: aparece antes do vídeo carregar e no lugar dele no modo leve */
+  /** versão menor (ex.: 720p) para o modo leve; sem ela vai o mesmo arquivo */
+  liteSrc?: string
+  /** imagem do primeiro quadro: aparece antes do vídeo carregar e no lugar dele com "reduzir movimento" */
   poster: string
   className?: string
 }
 
 /**
  * Vídeo de fundo decorativo: mudo, em loop, sem controles, cobrindo o pai
- * (que deve ser `relative`). O poster cobre a espera pelo primeiro quadro e,
- * no modo leve ou com "reduzir movimento", é o que fica no lugar do vídeo:
- * decodificar vídeo o tempo todo é justamente o que uma máquina fraca não aguenta.
- * O mp4 precisa ser H.264 (avc1), 8 bits: HEVC não toca na maioria dos Android.
+ * (que deve ser `relative`). O poster cobre a espera pelo primeiro quadro. No
+ * modo leve toca a versão menor (`liteSrc`); com "reduzir movimento" fica só o
+ * poster. O mp4 precisa ser H.264 (avc1), 8 bits: HEVC não toca na maioria dos Android.
  */
-export function BackgroundVideo({ src, poster, className = '' }: Props) {
+export function BackgroundVideo({ src, liteSrc, poster, className = '' }: Props) {
   const lite = usePerfLite()
   const video = useRef<HTMLVideoElement>(null)
-  const still = lite || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const file = lite && liteSrc ? liteSrc : src
 
   // O React define `muted` só como propriedade, e o autoplay no celular exige o
   // atributo no elemento; o play() explícito cobre o autoplay ignorado.
@@ -32,7 +34,7 @@ export function BackgroundVideo({ src, poster, className = '' }: Props) {
     el.play().catch(() => {
       /* bloqueado (ex.: economia de bateria no iPhone): fica o poster */
     })
-  }, [still, src])
+  }, [still, file])
 
   if (!src) return null
   const cover = `pointer-events-none absolute inset-0 h-full w-full object-cover ${className}`
@@ -40,7 +42,7 @@ export function BackgroundVideo({ src, poster, className = '' }: Props) {
   return (
     <video
       ref={video}
-      src={src}
+      src={file}
       poster={poster}
       autoPlay
       muted
