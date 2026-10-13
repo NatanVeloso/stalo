@@ -153,7 +153,7 @@ export const team = t.team.members.map((m, i) => ({ ...m, ...teamPeople[i] }))
 export const images = {
   hero: '/videos/hero-poster.jpg', // primeiro quadro de videos.hero
   about: '/sobre.webp',
-  aboutHome: '/sobre/ceo.webp', // retrato do CEO (Instagram, recorte 4:5 sem o texto do post): "Sobre" da home
+  aboutHome: '/fotos/ceo.webp', // retrato do CEO (Instagram, recorte 4:5 sem o texto do post): "Sobre" da home
   contact: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80',
 }
 
