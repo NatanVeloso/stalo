@@ -5,6 +5,8 @@
  */
 export const company = {
   name: 'Stalo Consulting',
+  /** Início de atividade no CNPJ (Receita Federal). A página "Sobre nós" calcula os anos a partir daqui. */
+  founded: '2018-05-30',
   cnpj: '30.590.005/0001-82',
   address: 'Av. Deputado Jamel Cecílio, 3455, Ed. Flamboyant Park, Jardim Goiás, CEP 74810-100',
   city: 'Goiânia/GO',

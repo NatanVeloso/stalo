@@ -1,2 +1,11 @@
 export { AtendimentoPage } from './pages/AtendimentoPage'
-export type { Canal, Conversa, ConversaEstado, Mensagem } from './types'
+export type {
+  Atendente,
+  Canal,
+  Conversa,
+  ConversaEstado,
+  ConversasContagem,
+  Mensagem,
+  MensagemEvento,
+  Template,
+} from './types'

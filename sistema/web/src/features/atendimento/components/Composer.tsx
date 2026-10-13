@@ -1,17 +1,19 @@
 import { useState, type KeyboardEvent } from 'react'
-import { LayoutTemplate, Paperclip, Send, StickyNote } from 'lucide-react'
+import { Paperclip, Send, StickyNote } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
-import { useT } from '@/shared/i18n'
+import { useT, fmt } from '@/shared/i18n'
 import { Button, IconButton } from '@/shared/ui'
+import { TemplateMenu } from './TemplateMenu'
 
 type Props = {
   /** Janela de 24 h fechada: só nota interna ou template. */
   windowClosed: boolean
   sending: boolean
   onSend: (texto: string, nota: boolean) => void
+  onTemplate: (templateId: string) => void
 }
 
-export function Composer({ windowClosed, sending, onSend }: Props) {
+export function Composer({ windowClosed, sending, onSend, onTemplate }: Props) {
   const t = useT()
   const [texto, setTexto] = useState('')
   const [nota, setNota] = useState(false)
@@ -32,14 +34,15 @@ export function Composer({ windowClosed, sending, onSend }: Props) {
 
   return (
     <div className="border-t border-line p-3">
-      {windowClosed && !nota && (
-        <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-danger-soft px-3 py-2 text-[13px] text-danger">
+      {blocked && (
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-danger-soft px-3 py-(--list-gap) text-small text-danger">
           <span>
-            {t.atendimento.window.closed}. {t.atendimento.window.hint}
+            {fmt(t.atendimento.window.closedBanner, {
+              closed: t.atendimento.window.closed,
+              hint: t.atendimento.window.hint,
+            })}
           </span>
-          <Button size="sm" variant="secondary" leading={<LayoutTemplate className="size-3.5" />}>
-            {t.atendimento.composer.template}
-          </Button>
+          <TemplateMenu disabled={sending} onEscolher={onTemplate} />
         </div>
       )}
       <div
@@ -52,6 +55,7 @@ export function Composer({ windowClosed, sending, onSend }: Props) {
           size="sm"
           label={t.atendimento.composer.note}
           active={nota}
+          aria-pressed={nota}
           onClick={() => setNota((n) => !n)}
           className={cn(nota && 'text-warn')}
         >
@@ -80,7 +84,7 @@ export function Composer({ windowClosed, sending, onSend }: Props) {
           {t.atendimento.composer.send}
         </Button>
       </div>
-      <p className="mt-1.5 px-1 text-[11px] text-fg-subtle">{t.atendimento.composer.hint}</p>
+      <p className="mt-1.5 px-1 text-caption text-fg-subtle">{t.atendimento.composer.hint}</p>
     </div>
   )
 }

@@ -1,10 +1,13 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { cn } from '@/shared/lib/cn'
 
 export type BarDatum = { key: string; label: string; value: number }
 
 type Props = {
   data: BarDatum[]
+  /** Nome acessível do gráfico (leitor de tela). Vai em `aria-label`, nunca em `<title>`: o
+   *  navegador mostraria o `<title>` do SVG como tooltip nativo no hover. */
+  label: string
   /** Formata o valor para o tooltip, o rótulo do pico e os ticks do eixo. */
   formatValue: (v: number) => string
   /** Ticks do eixo Y (valor arredondado, compacto). */
@@ -28,8 +31,7 @@ function rootFontPx() {
  * O SVG é desenhado no tamanho real do container (sem viewBox): assim o texto
  * fica em rem e acompanha a fonte/densidade, em vez de escalar com a largura.
  */
-export function BarChart({ data, formatValue, formatTick = formatValue, heightRem, className, style }: Props) {
-  const id = useId()
+export function BarChart({ data, label, formatValue, formatTick = formatValue, heightRem, className, style }: Props) {
   const root = useRef<HTMLDivElement>(null)
   const [hover, setHover] = useState<number | null>(null)
   const [size, setSize] = useState({ width: 0, height: 0, rem: 16 })
@@ -65,15 +67,7 @@ export function BarChart({ data, formatValue, formatTick = formatValue, heightRe
   return (
     <div ref={root} className={cn('relative w-full', className)} style={{ ...style, ...(heightRem ? { height } : {}) }}>
       {width > 0 && height > 0 && (
-        <svg
-          width={width}
-          height={height}
-          className="block"
-          role="img"
-          aria-labelledby={`${id}-title`}
-          style={{ fontSize: fontPx }}
-        >
-          <title id={`${id}-title`}>{data.map((d) => `${d.label}: ${formatValue(d.value)}`).join('; ')}</title>
+        <svg width={width} height={height} className="block" role="img" aria-label={label} style={{ fontSize: fontPx }}>
           {ticks.map((tv) => (
             <g key={tv}>
               <line
@@ -142,7 +136,7 @@ export function BarChart({ data, formatValue, formatTick = formatValue, heightRe
         <div
           role="status"
           className={cn(
-            'pointer-events-none absolute -translate-x-1/2 rounded-xl px-3 py-2 text-xs glass-strong',
+            'pointer-events-none absolute -translate-x-1/2 glass-strong rounded-xl px-3 py-2 text-xs',
             y(data[hover].value) < 4 * rem ? 'translate-y-0' : '-translate-y-full',
           )}
           // ancorado logo acima do topo da coluna em foco; coluna muito alta (sem espaço em cima) → abaixo do topo

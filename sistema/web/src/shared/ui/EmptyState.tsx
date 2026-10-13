@@ -10,7 +10,7 @@ export function EmptyState({ title, description, icon, action }: Props) {
         {icon ?? <Inbox />}
       </span>
       <p className="text-sm font-medium text-fg">{title}</p>
-      {description && <p className="max-w-xs text-[13px] text-fg-muted">{description}</p>}
+      {description && <p className="max-w-xs text-small text-fg-muted">{description}</p>}
       {action && <div className="mt-3">{action}</div>}
     </div>
   )

@@ -34,9 +34,15 @@
     -->
     <style>
       html { background: #07090c; }
+      /* ⚠ 100vw, não inset: 0 — a barra de rolagem surge quando o conteúdo entra e
+         encolhia a área útil; o logo centralizado dava um salto para a esquerda.
+         Com a largura da janela inteira, o centro não depende da barra. */
       #boot {
         position: fixed;
-        inset: 0;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100%;
         z-index: 101; /* acima da cortina do Preloader (100) */
         display: flex;
         align-items: center;

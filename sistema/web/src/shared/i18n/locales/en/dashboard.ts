@@ -10,6 +10,7 @@ export const dashboard: Dictionary['dashboard'] = {
     receber: 'Fees receivable',
     vencendo: 'Due in 7 days',
     vsLastMonth: 'vs. last month',
+    error: 'Could not load the indicators.',
   },
   chart: {
     title: 'Fees received',
@@ -19,18 +20,24 @@ export const dashboard: Dictionary['dashboard'] = {
     chart: 'View as chart',
     month: 'Month',
     value: 'Amount',
+    label: '{title}. {subtitle}',
+    empty: 'No fees received in this period.',
   },
   deadlines: {
     title: 'Upcoming deadlines',
     subtitle: 'Obligations due in the next 15 days',
     empty: 'No upcoming deadlines.',
   },
-  activity: { title: 'Recent activity', subtitle: 'What the team did last' },
+  activity: {
+    title: 'Recent activity',
+    subtitle: 'What the team did last',
+    empty: 'No activity recorded yet.',
+  },
   activityKinds: {
-    entrega: '{user} filed {what} for {client}',
-    documento: '{user} attached {what} to {client}',
-    cliente: '{user} registered {client}',
-    pagamento: '{client} paid {what}',
-    usuario: '{user} invited {what}',
+    entrega: '{usuario} filed {descricao} for {cliente}',
+    documento: '{usuario} attached {descricao} to {cliente}',
+    cliente: '{usuario} registered {cliente}',
+    pagamento: '{cliente} paid {descricao}',
+    usuario: '{usuario} invited {descricao}',
   },
 }

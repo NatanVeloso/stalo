@@ -40,18 +40,26 @@ export function configureHttp(next: HttpConfig) {
   config = next
 }
 
-let refreshing: Promise<boolean> | null = null
+/** O que o back devolve no refresh (`{ user, accessToken }`); o `user` interessa só ao bootstrap. */
+export type RefreshBody = { accessToken: string; user?: unknown }
 
-async function refresh(): Promise<boolean> {
+let refreshing: Promise<RefreshBody | null> | null = null
+
+/**
+ * Renova a sessão pelo cookie. Single-flight: quem chamar enquanto um refresh está em voo recebe a
+ * mesma promessa. Isso vale também para o bootstrap da sessão, porque mandar o mesmo refresh
+ * token duas vezes faz o back revogar a família inteira (ver DOMINIO.md → Rotação).
+ */
+export function refreshSession(): Promise<RefreshBody | null> {
   refreshing ??= (async () => {
     try {
       const res = await fetch(`${env.apiUrl}/auth/refresh`, { method: 'POST', credentials: 'include' })
-      if (!res.ok) return false
-      const body = (await res.json()) as { accessToken: string }
+      if (!res.ok) return null
+      const body = (await res.json()) as RefreshBody
       config.setAccessToken(body.accessToken)
-      return true
+      return body
     } catch {
-      return false
+      return null
     } finally {
       refreshing = null
     }
@@ -78,8 +86,8 @@ async function request<T>(method: string, path: string, options: Options = {}): 
   })
 
   if (res.status === 401 && retry) {
-    const ok = await refresh()
-    if (ok) return request<T>(method, path, { ...options, retry: false })
+    const renewed = await refreshSession()
+    if (renewed) return request<T>(method, path, { ...options, retry: false })
     config.onUnauthorized()
   }
 

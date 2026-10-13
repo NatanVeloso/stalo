@@ -66,5 +66,8 @@ export const mockObrigacoes: Obrigacao[] = seeds.map(([tipo, clienteId, dias, st
     responsavel,
     status,
     entregueEm: status === 'entregue' ? daysFromNow(dias - 1) : null,
+    // cadastrada ~1 mês antes do vencimento; atualizada na entrega (ou junto da criação)
+    criadoEm: daysFromNow(dias - 30) + 'T12:00:00.000Z',
+    atualizadoEm: daysFromNow(status === 'entregue' ? dias - 1 : dias - 30) + 'T12:00:00.000Z',
   }
 })

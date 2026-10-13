@@ -1,9 +1,8 @@
-import { Link } from 'react-router'
 import { ArrowRight, Pencil } from 'lucide-react'
-import { useT, useLocale } from '@/shared/i18n'
+import { useT, useLocale, fmt } from '@/shared/i18n'
 import { usePermission } from '@/shared/auth'
-import { formatCnpj, formatCurrency, formatDate } from '@/shared/lib/format'
-import { Avatar, Badge, Button, Drawer, Skeleton } from '@/shared/ui'
+import { formatCnpj, formatCurrency, formatDate, formatNumber } from '@/shared/lib/format'
+import { Avatar, Badge, Button, Drawer, ErrorState, LinkButton, Skeleton } from '@/shared/ui'
 import { useCliente } from '../queries'
 
 type Props = { id: string | null; onClose: () => void }
@@ -21,21 +20,25 @@ export function ClienteDrawer({ id, onClose }: Props) {
       open={!!id}
       onClose={onClose}
       title={c?.nomeFantasia ?? t.clientes.detail.title}
-      description={c ? `${c.razaoSocial} · ${formatCnpj(c.cnpj)}` : undefined}
+      description={
+        c ? fmt(t.clientes.detail.description, { razaoSocial: c.razaoSocial, cnpj: formatCnpj(c.cnpj) }) : undefined
+      }
       footer={
         <>
-          {podeEditar && (
+          {podeEditar && c && (
             <Button variant="secondary" leading={<Pencil className="size-4" />}>
               {t.common.actions.edit}
             </Button>
           )}
-          <Link to="/obrigacoes">
-            <Button trailing={<ArrowRight className="size-4" />}>{t.clientes.detail.openObrigacoes}</Button>
-          </Link>
+          <LinkButton to="/obrigacoes" trailing={<ArrowRight className="size-4" />}>
+            {t.clientes.detail.openObrigacoes}
+          </LinkButton>
         </>
       }
     >
-      {!c ? (
+      {query.isError ? (
+        <ErrorState onRetry={() => void query.refetch()} />
+      ) : !c ? (
         <div className="flex flex-col gap-3">
           <Skeleton className="h-16 w-full" />
           <Skeleton className="h-24 w-full" />
@@ -53,16 +56,16 @@ export function ClienteDrawer({ id, onClose }: Props) {
 
           <dl className="grid grid-cols-2 gap-3">
             <Stat label={t.clientes.detail.honorario} value={formatCurrency(c.honorario, locale)} />
-            <Stat label={t.clientes.detail.obrigacoesAbertas} value={String(c.obrigacoesAbertas)} />
-            <Stat label={t.clientes.detail.documentos} value={String(c.documentos)} />
+            <Stat label={t.clientes.detail.obrigacoesAbertas} value={formatNumber(c.obrigacoesAbertas, locale)} />
+            <Stat label={t.clientes.detail.documentos} value={formatNumber(c.documentos, locale)} />
             <Stat
               label={t.clientes.detail.ultimaEntrega}
-              value={c.ultimaEntrega ? formatDate(c.ultimaEntrega, locale) : '—'}
+              value={c.ultimaEntrega ? formatDate(c.ultimaEntrega, locale) : t.common.noValue}
             />
           </dl>
 
-          <section className="rounded-2xl border border-line p-4">
-            <h3 className="mb-3 text-[13px] font-semibold text-fg-muted">{t.clientes.detail.contato}</h3>
+          <section className="rounded-2xl p-4 glass-inset">
+            <h3 className="mb-3 text-small font-semibold text-fg-muted">{t.clientes.detail.contato}</h3>
             <dl className="flex flex-col gap-2 text-sm">
               <Row label={t.clientes.detail.email} value={c.email} />
               <Row label={t.clientes.detail.telefone} value={c.telefone} />
@@ -79,8 +82,8 @@ export function ClienteDrawer({ id, onClose }: Props) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-fg/[0.04] p-3">
-      <dt className="text-[11px] text-fg-subtle">{label}</dt>
+    <div className="rounded-2xl p-3 glass-inset">
+      <dt className="text-caption text-fg-subtle">{label}</dt>
       <dd className="mt-0.5 text-base font-semibold tabular">{value}</dd>
     </div>
   )

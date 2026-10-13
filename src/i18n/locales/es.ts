@@ -23,6 +23,7 @@ export const es: Dictionary = {
   nav: {
     services: 'Servicios',
     about: 'Nosotros',
+    team: 'Equipo',
     process: 'Cómo funciona',
     faq: 'FAQ',
     blog: 'Blog',
@@ -87,6 +88,7 @@ export const es: Dictionary = {
 
   about: {
     eyebrow: 'Sobre Stalo',
+    more: 'Conoce nuestra historia',
     title: 'Un contador que conoce tu negocio',
     accent: 'por su nombre.',
     lead: 'Trabajamos codo a codo con empresarios, transformando obligaciones fiscales en información útil para decidir. Cada cliente tiene un responsable directo, sin filas y sin respuestas genéricas.',
@@ -237,6 +239,8 @@ export const es: Dictionary = {
       contact: 'Contacto',
       faq: 'FAQ',
       blog: 'Blog',
+      about: 'Sobre nosotros',
+      team: 'Equipo',
     },
   },
 
@@ -257,6 +261,7 @@ export const es: Dictionary = {
   },
 
   blog: {
+    morePosts: 'Otras publicaciones',
     eyebrow: 'Blog',
     pageTitle: 'Blog',
     title: 'Contenido directo de nuestro',
@@ -277,6 +282,70 @@ export const es: Dictionary = {
     likes: 'me gusta',
     comments: 'comentarios',
     originalLanguage: 'Publicación original en portugués.',
+  },
+
+  aboutPage: {
+    pageTitle: 'Sobre nosotros',
+    title: 'Contabilidad para quienes',
+    accent: 'quieren decidir mejor.',
+    lead: 'Desde 2018, en Goiânia, transformamos obligaciones fiscales en información clara para quienes dirigen una empresa.',
+    primaryCta: 'Conoce al equipo',
+    founded: 'Fundada el 30 de mayo de 2018, en Goiânia, Brasil.',
+    years: '{anos} años acompañando empresas que crecen.',
+    storyTitle: 'Una contabilidad que',
+    storyAccent: 'explica los números.',
+    story: [
+      'Stalo nació de una convicción: el empresario necesita entender sus propios números, y no solo recibirlos a fin de mes.',
+      'Por eso cada cliente tiene un responsable directo, que conoce la operación, se anticipa a los plazos y traduce informes en decisiones. Los procesos digitales se encargan del resto.',
+      'Así atendemos comercio, servicios, tecnología, salud e industria: con rigor técnico, cercanía y visión de negocio.',
+    ],
+    missionLabel: 'Misión',
+    mission: 'Dar claridad y seguridad a las decisiones de nuestros clientes, con una contabilidad precisa, cercana y orientada al crecimiento.',
+    visionLabel: 'Visión',
+    vision: 'Ser reconocida como la contabilidad consultiva de referencia para empresas en crecimiento en Brasil.',
+    valuesTitle: 'Lo que guía',
+    valuesAccent: 'cada entrega.',
+    values: [
+      { title: 'Claridad', text: 'Un número sin explicación no ayuda a nadie. Cada informe llega con lo que significa para tu empresa.' },
+      { title: 'Cercanía', text: 'Un responsable que conoce tu negocio por su nombre y responde sin filas.' },
+      { title: 'Rigor técnico', text: 'Plazos cumplidos, obligaciones al día y cada asiento revisado.' },
+      { title: 'Ética', text: 'Planificación tributaria dentro de la ley, con transparencia sobre riesgos y costos.' },
+      { title: 'Visión de dueño', text: 'Cuidamos la empresa del cliente con el mismo celo y la misma ambición de quien la fundó.' },
+    ],
+    placeTitle: 'Dónde estamos',
+    placeMap: 'Ver en el mapa',
+    ctaTitle: '¿Hablamos de tu empresa?',
+    ctaText: 'Un consultor entiende tu momento e indica el camino correcto, sin compromiso.',
+  },
+
+  team: {
+    pageTitle: 'Equipo',
+    title: 'Las personas detrás',
+    accent: 'de tus números.',
+    lead: 'Especialistas en contabilidad, impuestos, nómina y finanzas, trabajando juntos para cada cliente.',
+    howTitle: 'Un responsable directo.',
+    howAccent: 'Un equipo entero detrás.',
+    how: [
+      { title: 'Hablas con una persona', text: 'Tu responsable conoce la operación y es tu canal único con Stalo.' },
+      { title: 'Especialistas por área', text: 'Fiscal, nómina y finanzas entran cuando el tema pide profundidad técnica.' },
+      { title: 'Una visión del conjunto', text: 'Todo converge en informes y reuniones que miran la empresa entera.' },
+    ],
+    areasTitle: 'Quién cuida',
+    areasAccent: 'cada frente.',
+    members: [
+      { role: 'Socio fundador', area: 'Dirección', text: 'Define la estrategia de Stalo y acompaña de cerca las cuentas de mayor complejidad.' },
+      { role: 'Coordinación contable', area: 'Contabilidad', text: 'Cierres, balances e informes de gestión que tienen sentido para quien decide.' },
+      { role: 'Coordinación fiscal', area: 'Fiscal y tributario', text: 'Liquidaciones, obligaciones accesorias y planificación tributaria dentro de la ley.' },
+      { role: 'Nómina y RR. HH.', area: 'Personas', text: 'Nómina, altas, bajas y eSocial sin retrasos y sin retrabajo.' },
+      { role: 'BPO financiero', area: 'Finanzas', text: 'Cuentas por pagar y por cobrar, conciliación y flujo de caja bajo control.' },
+      { role: 'Éxito del cliente', area: 'Relación', text: 'El responsable directo que conoce tu operación y acompaña cada entrega.' },
+    ],
+    noPhoto: 'Foto próximamente',
+    joinTitle: '¿Quieres formar parte?',
+    joinText: 'Siempre nos alegra conocer contadores y analistas a quienes les gustan las personas y los números.',
+    joinCta: 'Enviar currículum',
+    joinSubject: 'Quiero formar parte del equipo Stalo',
+    aboutCta: 'Nuestra historia',
   },
 
   legal: {

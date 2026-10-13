@@ -11,6 +11,8 @@ export const financeiro: Dictionary['financeiro'] = {
     despesas: 'Expenses this month',
   },
   tabs: { todos: 'All', receitas: 'Income', despesas: 'Expenses' },
+  filters: { tipo: 'Filter by type', status: 'Filter by status', allStatus: 'All statuses' },
+  searchPlaceholder: 'Search by description or client',
   columns: {
     descricao: 'Description',
     cliente: 'Client',

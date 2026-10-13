@@ -21,7 +21,7 @@ export function Toaster() {
             type="button"
             onClick={() => dismiss(t.id)}
             className={cn(
-              'animate-rise pointer-events-auto flex items-center gap-2.5 rounded-full py-2.5 pr-4 pl-3 text-sm glass-strong',
+              'animate-rise pointer-events-auto flex glass-strong items-center gap-2.5 rounded-full py-2.5 pr-4 pl-3 text-sm',
               t.tone === 'ok' && 'text-ok',
               t.tone === 'danger' && 'text-danger',
             )}

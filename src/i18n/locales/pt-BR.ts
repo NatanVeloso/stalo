@@ -35,6 +35,7 @@ export const ptBR = {
   nav: {
     services: 'Serviços',
     about: 'Sobre',
+    team: 'Equipe',
     process: 'Como funciona',
     faq: 'FAQ',
     blog: 'Blog',
@@ -101,6 +102,8 @@ export const ptBR = {
 
   about: {
     eyebrow: 'Sobre a Stalo',
+    /** Link da section da home para a página /sobre. */
+    more: 'Conheça nossa história',
     title: 'Um contador que conhece o seu negócio',
     accent: 'pelo nome.',
     lead: 'Trabalhamos lado a lado com empresários, transformando obrigações fiscais em informação útil para decidir. Cada cliente tem um responsável direto, sem filas e sem respostas genéricas.',
@@ -254,6 +257,8 @@ export const ptBR = {
       contact: 'Contato',
       faq: 'FAQ',
       blog: 'Blog',
+      about: 'Sobre nós',
+      team: 'Equipe',
     },
   },
 
@@ -277,6 +282,7 @@ export const ptBR = {
 
   /** Blog alimentado pelo Instagram (Blog.tsx, BlogPage.tsx, PostPage.tsx). */
   blog: {
+    morePosts: 'Outras publicações',
     eyebrow: 'Blog',
     pageTitle: 'Blog',
     title: 'Conteúdo direto do nosso',
@@ -297,6 +303,84 @@ export const ptBR = {
     likes: 'curtidas',
     comments: 'comentários',
     originalLanguage: 'Publicação original em português.',
+  },
+
+  /**
+   * Página "Sobre nós" (/sobre, 12/10/2026). A data de fundação é a do CNPJ
+   * (início de atividade em 30/05/2018). ⚠ História, missão, visão e valores são
+   * PROPOSTA DE TEXTO: validar com a Stalo antes de publicar.
+   */
+  aboutPage: {
+    pageTitle: 'Sobre nós',
+    title: 'Contabilidade para quem',
+    accent: 'quer decidir melhor.',
+    lead: 'Desde 2018, em Goiânia, transformamos obrigações fiscais em informação clara para quem lidera uma empresa.',
+    primaryCta: 'Conheça a equipe',
+    founded: 'Fundada em 30 de maio de 2018, em Goiânia.',
+    /** "{anos}" vira o número de anos desde a fundação, calculado na hora. */
+    years: '{anos} anos acompanhando empresas que crescem.',
+    storyTitle: 'Uma contabilidade que',
+    storyAccent: 'explica os números.',
+    story: [
+      'A Stalo nasceu com uma convicção: o empresário precisa entender os próprios números, e não apenas recebê-los no fim do mês.',
+      'Por isso cada cliente tem um responsável direto, que conhece a operação, antecipa prazos e traduz relatórios em decisões. Processos digitais cuidam do resto.',
+      'É assim que atendemos comércio, serviços, tecnologia, saúde e indústria: com rigor técnico, proximidade e visão de negócio.',
+    ],
+    missionLabel: 'Missão',
+    mission: 'Dar clareza e segurança às decisões dos nossos clientes, com uma contabilidade precisa, próxima e orientada ao crescimento.',
+    visionLabel: 'Visão',
+    vision: 'Ser reconhecida como a contabilidade consultiva de referência para empresas em crescimento no Brasil.',
+    valuesTitle: 'O que guia',
+    valuesAccent: 'cada entrega.',
+    values: [
+      { title: 'Clareza', text: 'Número sem explicação não ajuda ninguém. Cada relatório vem com o que ele significa para a sua empresa.' },
+      { title: 'Proximidade', text: 'Um responsável que conhece o seu negócio pelo nome e responde sem fila.' },
+      { title: 'Rigor técnico', text: 'Prazos cumpridos, obrigações em dia e cada lançamento conferido.' },
+      { title: 'Ética', text: 'Planejamento tributário dentro da lei, com transparência sobre riscos e custos.' },
+      { title: 'Visão de dono', text: 'Cuidamos da empresa do cliente com o mesmo zelo e a mesma ambição de quem a fundou.' },
+    ],
+    placeTitle: 'Onde estamos',
+    placeMap: 'Ver no mapa',
+    ctaTitle: 'Vamos conversar sobre a sua empresa?',
+    ctaText: 'Um consultor entende o seu momento e indica o caminho certo, sem compromisso.',
+  },
+
+  /**
+   * Página "Equipe" (/equipe, 12/10/2026). ⚠ Sem nomes nem fotos ainda: cada
+   * card mostra a função e a área. Os dados das pessoas entram em `team` de
+   * data/content.ts quando a Stalo enviar.
+   */
+  team: {
+    pageTitle: 'Equipe',
+    title: 'As pessoas por trás',
+    accent: 'dos seus números.',
+    lead: 'Especialistas em contabilidade, tributos, pessoal e finanças, trabalhando juntos para cada cliente.',
+    howTitle: 'Um responsável direto.',
+    howAccent: 'Um time inteiro por trás.',
+    how: [
+      { title: 'Você fala com uma pessoa', text: 'Seu responsável conhece a operação e é o seu canal único com a Stalo.' },
+      { title: 'Especialistas por área', text: 'Fiscal, pessoal e financeiro entram quando o assunto pede profundidade técnica.' },
+      { title: 'Uma visão do todo', text: 'Tudo converge em relatórios e reuniões que olham para a empresa inteira.' },
+    ],
+    areasTitle: 'Quem cuida de',
+    areasAccent: 'cada frente.',
+    /** A ordem casa com `teamPeople` em data/content.ts (nome, foto, LinkedIn). */
+    members: [
+      { role: 'Sócio-fundador', area: 'Direção', text: 'Define a estratégia da Stalo e acompanha de perto as contas de maior complexidade.' },
+      { role: 'Coordenação contábil', area: 'Contabilidade', text: 'Fechamentos, balanços e relatórios gerenciais que fazem sentido para quem decide.' },
+      { role: 'Coordenação fiscal', area: 'Fiscal e tributário', text: 'Apurações, obrigações acessórias e planejamento tributário dentro da lei.' },
+      { role: 'Departamento pessoal', area: 'Pessoal e RH', text: 'Folha, admissões, desligamentos e eSocial sem atraso e sem retrabalho.' },
+      { role: 'BPO financeiro', area: 'Financeiro', text: 'Contas a pagar e a receber, conciliação e fluxo de caixa sob controle.' },
+      { role: 'Sucesso do cliente', area: 'Relacionamento', text: 'O responsável direto que conhece a sua operação e acompanha cada entrega.' },
+    ],
+    /** Usado quando a pessoa ainda não tem foto. */
+    noPhoto: 'Foto em breve',
+    joinTitle: 'Quer fazer parte?',
+    joinText: 'Estamos sempre abertos a conhecer contadores e analistas que gostam de gente e de números.',
+    joinCta: 'Enviar currículo',
+    /** Assunto do e-mail de currículo. */
+    joinSubject: 'Quero fazer parte da equipe Stalo',
+    aboutCta: 'Nossa história',
   },
 
   legal: {

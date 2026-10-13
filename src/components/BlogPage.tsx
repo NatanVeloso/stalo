@@ -5,7 +5,7 @@ import { hideBoot } from '../lib/boot'
 import { fetchPosts, type PostSummary } from '../lib/posts'
 import { CookieConsent } from './CookieConsent'
 import { PageFooter } from './PageFooter'
-import { PageHeader } from './PageHeader'
+import { Header } from './Header'
 import { PostCard } from './PostCard'
 
 const PAGE_SIZE = 12
@@ -40,9 +40,9 @@ export function BlogPage() {
 
   return (
     <div className="min-h-screen bg-ink text-fog">
-      <PageHeader />
+      <Header show />
 
-      <main className="px-6 pb-16 pt-16 md:pt-24">
+      <main className="px-6 pb-16 pt-32 md:pt-36">
         <div className="container-site">
           <div className="mb-12 max-w-[760px]">
             <a href={homeHref()} className="mb-8 inline-flex items-center gap-2 text-sm text-fog/70 transition-colors hover:text-sky">

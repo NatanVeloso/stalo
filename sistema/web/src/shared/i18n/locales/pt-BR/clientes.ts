@@ -15,6 +15,7 @@ export const clientes = {
   },
   detail: {
     title: 'Detalhes do cliente',
+    description: '{razaoSocial} · {cnpj}',
     contato: 'Contato',
     email: 'E-mail',
     telefone: 'Telefone',

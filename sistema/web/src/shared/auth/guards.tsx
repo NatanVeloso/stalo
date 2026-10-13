@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from 'react-router'
 import { useAuth } from './auth.store'
 import { can, type Permission } from './permissions'
 import { SplashScreen } from '@/shared/ui/SplashScreen'
-import { ForbiddenPage } from '@/shared/ui/ErrorPages'
+import { ForbiddenPage } from '@/shared/ui/ForbiddenPage'
 
 /** Rotas filhas só para quem está logado; anônimo vai para /login e volta depois. */
 export function RequireAuth() {

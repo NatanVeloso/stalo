@@ -24,3 +24,10 @@ export function monthsAgo(months: number) {
 export function hoursFromNow(hours: number) {
   return new Date(Date.now() + hours * 3_600_000).toISOString()
 }
+
+/** Pagina uma lista no formato do contrato (`{ items, page, pageSize, total }`), como o back fará. */
+export function paginate<T>(rows: T[], page = 1, pageSize = 20) {
+  const size = Math.min(Math.max(pageSize, 1), 100)
+  const start = (Math.max(page, 1) - 1) * size
+  return { items: rows.slice(start, start + size), page: Math.max(page, 1), pageSize: size, total: rows.length }
+}

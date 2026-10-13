@@ -18,17 +18,17 @@ export function Field({ label, hint, error, className, children }: Props) {
   const describedBy = error ? errorId : hint ? hintId : undefined
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <label htmlFor={id} className="text-[13px] font-medium text-fg-muted">
+      <label htmlFor={id} className="text-small font-medium text-fg-muted">
         {label}
       </label>
       {children({ id, describedBy, invalid: !!error })}
       {error ? (
-        <p id={errorId} role="alert" className="text-[13px] text-danger">
+        <p id={errorId} role="alert" className="text-small text-danger">
           {error}
         </p>
       ) : (
         hint && (
-          <p id={hintId} className="text-[13px] text-fg-subtle">
+          <p id={hintId} className="text-small text-fg-subtle">
             {hint}
           </p>
         )

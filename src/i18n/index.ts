@@ -38,11 +38,24 @@ const labels: Record<Locale, { short: string; name: string }> = {
 const BLOG_SLUG = 'blog'
 const POST_PATH = new RegExp(`^${BLOG_SLUG}/([a-z0-9]+(?:-[a-z0-9]+)*)$`)
 
+/**
+ * Páginas institucionais (12/10/2026), com o caminho TRADUZIDO: /sobre e
+ * /equipe, /en/about e /en/team, /es/nosotros e /es/equipo. ⚠ "/sobre" não
+ * colide com a âncora #sobre da home: uma é caminho, a outra é fragmento.
+ */
+const PAGINAS: Record<Locale, { sobre: string; equipe: string }> = {
+  'pt-BR': { sobre: 'sobre', equipe: 'equipe' },
+  en: { sobre: 'about', equipe: 'team' },
+  es: { sobre: 'nosotros', equipe: 'equipo' },
+}
+
 export type Page =
   | { kind: 'home' }
   | { kind: 'legal'; key: LegalKey }
   | { kind: 'blog' }
   | { kind: 'post'; slug: string }
+  | { kind: 'sobre' }
+  | { kind: 'equipe' }
 
 /** Qualquer caminho que não seja uma página legal cai no site de página única. */
 function resolve(pathname: string): { locale: Locale; page: Page } {
@@ -54,6 +67,8 @@ function resolve(pathname: string): { locale: Locale; page: Page } {
   const key = (Object.keys(docs) as LegalKey[]).find((k) => docs[k].slug === rest)
   if (key) return { locale, page: { kind: 'legal', key } }
   if (rest === BLOG_SLUG) return { locale, page: { kind: 'blog' } }
+  if (rest === PAGINAS[locale].sobre) return { locale, page: { kind: 'sobre' } }
+  if (rest === PAGINAS[locale].equipe) return { locale, page: { kind: 'equipe' } }
   const post = POST_PATH.exec(rest)
   if (post) return { locale, page: { kind: 'post', slug: post[1] } }
   return { locale, page: { kind: 'home' } }
@@ -84,6 +99,14 @@ export function postHref(slug: string, l: Locale = locale) {
   return `${blogHref(l)}/${slug}`
 }
 
+export function sobreHref(l: Locale = locale) {
+  return `${prefixes[l] ? '/' + prefixes[l] : ''}/${PAGINAS[l].sobre}`
+}
+
+export function equipeHref(l: Locale = locale) {
+  return `${prefixes[l] ? '/' + prefixes[l] : ''}/${PAGINAS[l].equipe}`
+}
+
 /** A mesma página em outro idioma. */
 export function pageHref(p: Page, l: Locale = locale) {
   switch (p.kind) {
@@ -93,6 +116,10 @@ export function pageHref(p: Page, l: Locale = locale) {
       return blogHref(l)
     case 'post':
       return postHref(p.slug, l)
+    case 'sobre':
+      return sobreHref(l)
+    case 'equipe':
+      return equipeHref(l)
     default:
       return homeHref(l)
   }

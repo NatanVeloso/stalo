@@ -1,57 +1,42 @@
+import { useState } from 'react'
 import { UserPlus } from 'lucide-react'
-import { useT, useLocale } from '@/shared/i18n'
-import { roles } from '@/shared/auth'
-import { formatRelative } from '@/shared/lib/format'
+import { useT } from '@/shared/i18n'
+import { roles, type Role } from '@/shared/auth'
+import { useDebounce } from '@/shared/hooks/useDebounce'
 import { PageHeader } from '@/shared/layout'
-import { Avatar, Badge, Button, Card, CardHeader, DataTable, type Column } from '@/shared/ui'
+import { Button, Card, DataTable, Pagination, SearchInput, Select, type SortState } from '@/shared/ui'
 import { useUsuarios } from '../queries'
-import type { Usuario } from '../types'
+import type { UsuarioSort } from '../types'
+import { PerfisCard } from '../components/PerfisCard'
+import { useUsuarioColumns } from '../components/useUsuarioColumns'
+
+const PAGE_SIZE = 10
 
 export function UsuariosPage() {
   const t = useT()
-  const locale = useLocale()
-  const query = useUsuarios()
+  const columns = useUsuarioColumns()
+  const [search, setSearch] = useState('')
+  const [role, setRole] = useState<Role | ''>('')
+  const [sort, setSort] = useState<SortState>(null)
+  const [page, setPage] = useState(1)
+  const debounced = useDebounce(search)
 
-  const columns: Column<Usuario>[] = [
-    {
-      key: 'nome',
-      header: t.usuarios.columns.usuario,
-      sortValue: (u) => u.nome,
-      cell: (u) => (
-        <span className="flex items-center gap-3">
-          <Avatar name={u.nome} size="sm" />
-          <span className="min-w-0">
-            <span className="block truncate font-medium">{u.nome}</span>
-            <span className="block truncate text-xs text-fg-muted">{u.email}</span>
-          </span>
-        </span>
-      ),
-    },
-    {
-      key: 'role',
-      header: t.usuarios.columns.perfil,
-      sortValue: (u) => u.role,
-      cell: (u) => <Badge dot={false}>{t.common.roles[u.role]}</Badge>,
-    },
-    {
-      key: 'ultimoAcesso',
-      header: t.usuarios.columns.ultimoAcesso,
-      hideOnMobile: true,
-      sortValue: (u) => u.ultimoAcesso ?? '',
-      cell: (u) =>
-        u.ultimoAcesso ? (
-          <span className="text-fg-muted">{formatRelative(u.ultimoAcesso, locale)}</span>
-        ) : (
-          <span className="text-fg-subtle">{t.usuarios.never}</span>
-        ),
-    },
-    {
-      key: 'status',
-      header: t.usuarios.columns.status,
-      sortValue: (u) => u.status,
-      cell: (u) => <Badge tone={u.status === 'ativo' ? 'ok' : 'neutral'}>{t.common.status[u.status]}</Badge>,
-    },
-  ]
+  const query = useUsuarios({
+    page,
+    pageSize: PAGE_SIZE,
+    search: debounced,
+    role,
+    sort: sort?.key as UsuarioSort | undefined,
+    order: sort?.order,
+  })
+
+  // filtro ou ordenação novos mudam o conjunto: volta para a primeira página
+  const resetando =
+    <V,>(set: (v: V) => void) =>
+    (v: V) => {
+      set(v)
+      setPage(1)
+    }
 
   return (
     <>
@@ -61,22 +46,45 @@ export function UsuariosPage() {
         actions={<Button leading={<UserPlus className="size-4" />}>{t.usuarios.invite}</Button>}
       />
 
-      <div className="animate-rise grid gap-4 xl:grid-cols-3">
+      <div className="animate-rise grid items-start gap-(--stack-y) xl:grid-cols-3">
         <Card padding="none" className="xl:col-span-2">
-          <DataTable columns={columns} rows={query.data ?? []} rowKey={(u) => u.id} loading={query.isPending} />
+          <div className="flex flex-col gap-2 p-(--card-p) sm:flex-row sm:items-center">
+            <SearchInput
+              value={search}
+              onChange={resetando(setSearch)}
+              placeholder={t.usuarios.searchPlaceholder}
+              className="sm:max-w-sm sm:flex-1"
+            />
+            <Select
+              size="sm"
+              aria-label={t.usuarios.filters.role}
+              value={role}
+              onChange={(v) => resetando(setRole)(v as Role | '')}
+              options={[
+                { value: '', label: t.usuarios.filters.allRoles },
+                ...roles.map((r) => ({ value: r, label: t.common.roles[r] })),
+              ]}
+              className="sm:w-44"
+            />
+          </div>
+          <div className={query.isPlaceholderData ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
+            <DataTable
+              columns={columns}
+              rows={query.data?.items ?? []}
+              rowKey={(u) => u.id}
+              loading={query.isPending}
+              error={query.isError}
+              onRetry={() => void query.refetch()}
+              sort={sort}
+              onSortChange={resetando(setSort)}
+            />
+          </div>
+          {query.data && query.data.total > 0 && !query.isError && (
+            <Pagination page={page} pageSize={PAGE_SIZE} total={query.data.total} onChange={setPage} />
+          )}
         </Card>
 
-        <Card>
-          <CardHeader title={t.usuarios.columns.perfil} />
-          <ul className="flex flex-col gap-3">
-            {roles.map((r) => (
-              <li key={r} className="rounded-2xl bg-fg/[0.04] p-3">
-                <p className="text-sm font-medium">{t.common.roles[r]}</p>
-                <p className="mt-0.5 text-[13px] text-fg-muted">{t.usuarios.rolesHelp[r]}</p>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <PerfisCard />
       </div>
     </>
   )

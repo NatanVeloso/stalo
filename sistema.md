@@ -34,7 +34,8 @@ src/
   hooks/useLiquidGlass.ts
   components/         uma section ou peça de UI por arquivo
     Blog*.tsx, Post*  blog: section da home, /blog e /blog/:slug
-    PageHeader/Footer cabeçalho e rodapé das páginas estáticas
+    AboutPage, TeamPage  páginas /sobre e /equipe (caminho traduzido: /en/about, /es/equipo...)
+    PageHeader/Footer cabeçalho reduzido (só textos legais) e rodapé "Voltar ao site" das páginas estáticas
   index.css           tokens (@theme), utilities de vidro, overrides do modo lite
 api/                  backend NestJS do blog (ver "Blog e API"), com README próprio
 ```
@@ -85,13 +86,23 @@ Convenções:
 
 Idioma novo: adicione em `locales`, `prefixes`, `dictionaries`, `legalDocs` e `labels` de `src/i18n/index.ts` e crie os dois arquivos. O servidor precisa devolver `index.html` para qualquer caminho (fallback de SPA).
 
+## Páginas "Sobre nós" e "Equipe"
+
+Páginas estáticas no padrão do blog (`<Header show />` da home + `PageFooter`, `hideBoot()` ao montar, `<CookieConsent />`, `document.title` próprio), sem ScrollSmoother: rolagem nativa. As revelações (títulos, fade, contadores) ficam dentro de `gsap.matchMedia().add(MOTION_OK, ...)`; com "reduzir movimento" a página nasce pronta.
+
+- **Rotas:** `PAGINAS` em `src/i18n/index.ts`, com o caminho traduzido (pt `sobre`/`equipe`, en `about`/`team`, es `nosotros`/`equipo`); hrefs por `sobreHref()` e `equipeHref()`. No header, "Sobre" e "Equipe" são essas páginas; a section `#sobre` da home continua e tem o link "Conheça nossa história".
+- **Fundação:** `company.founded` (início de atividade do CNPJ, 30/05/2018). Os "N anos" são calculados na hora.
+- **Textos:** `t.aboutPage` e `t.team` nos três idiomas. ⚠ História, missão, visão e valores são PROPOSTA de texto, a validar com a Stalo.
+- **Equipe:** função, área e descrição vêm de `t.team.members`; nome, foto e LinkedIn de `teamPeople` em `data/content.ts`, na mesma ordem. Vazio hoje: o card mostra a função e a marca no lugar do retrato. Foto em `public/equipe/`, retrato 4:5.
+- **Header:** são 7 links; entre `md` e `lg` o espaçamento é `gap-2` para caber em espanhol a 768 px. Link novo no header exige medir de novo nos três idiomas.
+
 ## Blog e API
 
 O blog é o Instagram da Stalo republicado: o backend em `api/` (NestJS 12 + SQLite via Drizzle) sincroniza as publicações pela Graph API, baixa as imagens e serve tudo em `/api/posts`; o site só lê. Detalhes de endpoints, variáveis e token em `api/README.md`.
 
 - **Páginas:** section `Blog` na home (últimas 3), `/blog` (lista com "carregar mais") e `/blog/:slug`, nos três idiomas (`/en/blog`, `/es/blog/...`). As rotas e os hrefs (`blogHref`, `postHref`, `pageHref`) ficam em `src/i18n/index.ts`, como as páginas legais.
 - **Home carrega os posts antes de renderizar** (`fetchHomePosts` em `main.tsx`, teto de 1,5 s). Motivo: os pins das sections são medidos na montagem; uma section que aparecesse depois quebraria o scroll. Sem API ou sem posts, a home sobe sem a section e os `z` das demais continuam válidos.
-- **Páginas estáticas novas** (`BlogPage`, `PostPage`) seguem o padrão da `LegalPage`: sem GSAP, `PageHeader` + `PageFooter`, `hideBoot()` ao montar (senão o logo de carregamento do `index.html` cobre a tela), `<CookieConsent />` montado, `document.title` próprio.
+- **Páginas estáticas novas** (`BlogPage`, `PostPage`, `AboutPage`, `TeamPage`) usam o MESMO `Header` da home (`<Header show />`, 12/10/2026): fora da home ele é `fixed`, então a primeira section precisa de `pt-28 md:pt-36`; as âncoras viram `homeHref() + '#...'` e o link da página atual fica marcado (`currentPage` em Header.tsx); chegando na home com `#ancora`, `src/lib/hash.ts` guarda e tira o hash da URL ANTES do salto nativo (main.tsx) e o App rola até ele quando o preloader libera; sem isso a página chegava rolada e os pins do "Como funciona" calculavam errado. Só a `LegalPage` continua com o `PageHeader` reduzido. Também: `PageFooter`, `hideBoot()` ao montar (senão o logo de carregamento do `index.html` cobre a tela), `<CookieConsent />` montado, `document.title` próprio.
 - **Links de página no menu:** `nav` em `data/content.ts` aceita hrefs que não são âncora (ex.: `/blog`); `Header.tsx` só cria ScrollTrigger e intercepta o clique para hrefs que começam com `#`.
 - **Caminhos relativos:** o site chama `/api` e `/media` na própria origem. Em dev o `vite.config.ts` faz proxy para a API na porta 3000; em produção o nginx precisa fazer o mesmo (`location /api` e `location /media` para o Nest).
 - **Conteúdo é em português:** as legendas vêm do Instagram como estão. Em `/en` e `/es` a página do post avisa isso (`t.blog.originalLanguage`); a interface em volta é traduzida normalmente.

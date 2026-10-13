@@ -21,6 +21,22 @@ export default tseslint.config(
           patterns: [
             { group: ['../../*'], message: 'Use o alias @/ em vez de subir mais de um nível.' },
             { group: ['@/features/*/*', '!@/features/*/index'], message: 'Importe de outra feature só pelo index dela.' },
+            { group: ['@radix-ui/*'], message: 'Radix só dentro de src/shared/ui; use o componente embrulhado.' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // o design system é o único lugar que embrulha os primitivos do Radix
+    files: ['src/shared/ui/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['../../*'], message: 'Use o alias @/ em vez de subir mais de um nível.' },
+            { group: ['@/features/*/*', '!@/features/*/index'], message: 'Importe de outra feature só pelo index dela.' },
           ],
         },
       ],

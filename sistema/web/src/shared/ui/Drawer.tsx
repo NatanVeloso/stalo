@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { useT } from '@/shared/i18n'
@@ -20,6 +20,8 @@ type Props = {
 export function Drawer({ open, onClose, title, description, children, footer }: Props) {
   const t = useT()
   const ref = useRef<HTMLDialogElement>(null)
+  // id único: dois drawers na mesma tela não podem apontar para o mesmo título
+  const titleId = useId()
 
   useEffect(() => {
     const el = ref.current
@@ -31,20 +33,22 @@ export function Drawer({ open, onClose, title, description, children, footer }: 
   return createPortal(
     <dialog
       ref={ref}
-      onClose={onClose}
+      // o evento `close` do <dialog> também dispara quando o pai fecha (open=false → el.close());
+      // só repassa quando o fechamento veio do próprio dialog (Esc), senão onClose roda duas vezes
+      onClose={() => open && onClose()}
       onClick={(e) => e.target === ref.current && onClose()}
-      className="fixed inset-0 m-0 h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm open:flex"
-      aria-labelledby="drawer-title"
+      className="fixed inset-0 m-0 h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-scrim backdrop:backdrop-blur-sm open:flex"
+      aria-labelledby={titleId}
     >
       <div className="ml-auto flex h-full w-full max-w-lg flex-col p-3 md:p-4" onClick={(e) => e.stopPropagation()}>
-        <section className="animate-rise relative flex h-full flex-col overflow-hidden rounded-3xl glass-strong">
+        <section className="animate-rise relative flex h-full glass-strong flex-col overflow-hidden rounded-3xl">
           <span className="glass-sheen" aria-hidden="true" />
           <header className="flex items-start justify-between gap-4 px-6 pt-6 pb-4">
             <div className="min-w-0">
-              <h2 id="drawer-title" className="text-lg font-semibold tracking-tight">
+              <h2 id={titleId} className="text-lg font-semibold tracking-tight">
                 {title}
               </h2>
-              {description && <p className="mt-0.5 text-[13px] text-fg-muted">{description}</p>}
+              {description && <p className="mt-0.5 text-small text-fg-muted">{description}</p>}
             </div>
             <IconButton label={t.common.actions.close} onClick={onClose} variant="glass" size="sm">
               <X />

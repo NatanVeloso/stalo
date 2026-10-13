@@ -1,8 +1,10 @@
 import type { Lancamento } from '@/features/financeiro'
-import { daysFromNow } from '../util'
+import { daysFromNow, hoursFromNow } from '../util'
 import { mockClientes } from './clientes'
 
-const honorarios: Lancamento[] = mockClientes
+type SemDatas = Omit<Lancamento, 'criadoEm' | 'atualizadoEm'>
+
+const honorarios: SemDatas[] = mockClientes
   .filter((c) => c.status === 'ativo')
   .map((c, i) => {
     // vencimento no dia 10: parte paga, parte em aberto, duas vencidas
@@ -21,7 +23,7 @@ const honorarios: Lancamento[] = mockClientes
     }
   })
 
-const extras: Lancamento[] = [
+const extras: SemDatas[] = [
   {
     id: 'l-x1',
     tipo: 'receita',
@@ -112,6 +114,11 @@ const extras: Lancamento[] = [
   },
 ]
 
-export const mockLancamentos: Lancamento[] = [...honorarios, ...extras].sort((a, b) =>
-  b.vencimento.localeCompare(a.vencimento),
-)
+// criado ~20 dias antes do vencimento; o pago foi atualizado na baixa, o resto ficou como criado
+export const mockLancamentos: Lancamento[] = [...honorarios, ...extras]
+  .map((l, i) => {
+    const criadoEm = new Date(`${l.vencimento}T12:00:00Z`).getTime() - 20 * 86_400_000 - i * 3_600_000
+    const criado = new Date(Math.min(criadoEm, Date.now())).toISOString()
+    return { ...l, criadoEm: criado, atualizadoEm: l.status === 'pago' ? hoursFromNow(-(i + 1) * 5) : criado }
+  })
+  .sort((a, b) => b.vencimento.localeCompare(a.vencimento))

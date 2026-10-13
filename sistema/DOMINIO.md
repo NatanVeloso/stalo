@@ -20,7 +20,7 @@ Guias específicos: `web/AGENTE-FRONT.md` e `api/AGENTE-BACK.md`.
 | **Auditoria** | Registro imutável de quem fez o quê, quando, em qual registro. |
 | **Conversa** | Atendimento via WhatsApp com um contato (telefone). Pertence a um **Canal** e pode ter um atendente. Liga-se a um Cliente quando o telefone é reconhecido. |
 | **Canal** | Fila de atendimento (Fiscal, Departamento Pessoal, Financeiro, Comercial...). Define quem recebe as conversas e o horário de atendimento. |
-| **Mensagem** | Item de uma conversa: texto, mídia, template ou nota interna (nota não vai para o WhatsApp). |
+| **Mensagem** | Item de uma conversa: texto, mídia, template, nota interna (nota não vai para o WhatsApp) ou evento de sistema (atribuída, transferida, resolvida, reaberta, vinculada), que trafega como `evento` + `dados` e o front traduz. |
 | **Template** | Mensagem pré-aprovada pela Meta, única forma de iniciar contato fora da janela de 24 h. |
 | **Conta bancária** | Conta de um Cliente vinculada via Open Finance (agregador). Guarda saldo e **Transações** sincronizadas. Nunca guarda credencial do banco. |
 | **Transação** | Linha do extrato de uma conta bancária. Pode ser **conciliada** com um Lançamento. |
@@ -90,14 +90,17 @@ Base: `VITE_API_URL` no front, ex.: `https://api.stalo.com.br/v1`. Prefixo `/v1`
 (soft delete por padrão). Ações que não são CRUD viram sub-recurso com verbo no nome:
 `PATCH /obrigacoes/:id/entregar`, `POST /usuarios/:id/reenviar-convite`.
 
-**Lista paginada** (toda lista, sem exceção):
+**Lista paginada** (toda lista de registros de negócio):
 
 ```
-GET /clientes?page=1&pageSize=20&search=supri&sort=razaoSocial&order=asc&regime=simples
+GET /clientes?page=1&pageSize=20&search=supri&sort=nomeFantasia&order=asc&regime=simples
 → { "items": [...], "page": 1, "pageSize": 20, "total": 137 }
 ```
 
-`pageSize` máximo 100. Filtros são query params com o nome do campo.
+`pageSize` máximo 100. Filtros são query params com o nome do campo; `sort` é o nome do campo do
+recurso. Ficam fora da paginação só as listas curtas de configuração (canais, templates,
+atendentes, sessões do próprio usuário) e feeds com limite fixo (`/dashboard/atividades`).
+Contagem para abas/filtros vem de um endpoint `/contagem` do recurso, nunca do array paginado.
 
 **Erros** sempre neste formato, com `code` estável (o front traduz pelo `code`, não pela
 `message`):
@@ -126,8 +129,14 @@ Decisões:
 
 - **Provedor: Meta WhatsApp Business Platform (Cloud API)**, direto, com o número da empresa.
   Sem intermediário (Z-API, Twilio, 360dialog) para não pagar duas vezes nem depender de terceiro
-  no dado do cliente. Exige conta Meta Business verificada e o número migrado para a API (ele deixa
-  de funcionar no app WhatsApp Business do celular).
+  no dado do cliente. Exige conta Meta Business verificada e o número registrado na API.
+  **PENDENTE (validar antes de mexer no número):** dá para usar o número no app WhatsApp Business
+  do celular e na API ao mesmo tempo? A Meta oferece o modo **coexistência** (onboarding pelo
+  app WhatsApp Business), que mantém o número nos dois; confirmar se está disponível para o número
+  da Stalo e quais limitações traz (ex.: o que sincroniza entre app e API, recursos do app que
+  deixam de funcionar). Se não estiver disponível, o número sai do app e passa a existir só na API:
+  avisar a equipe e fazer backup das conversas antes, porque o histórico do app não vai para a API.
+  A resposta muda a rotina de atendimento e este documento.
 - **Um número, vários canais.** A Meta entrega tudo num webhook; o sistema roteia por canal
   (menu inicial automático "1 Fiscal, 2 DP, 3 Financeiro", ou pelo cliente reconhecido e seu
   responsável). Canal tem horário de atendimento e mensagem fora do horário.
@@ -142,7 +151,7 @@ Decisões:
 - **Estados da conversa:** `aberta` → `em_atendimento` (tem atendente) → `aguardando_cliente` →
   `resolvida`. Resolvida reabre sozinha se o contato mandar mensagem. Histórico nunca é apagado.
 - **Fluxo de inbox:** lista por canal/estado/atendente, busca, atribuir, transferir de canal,
-  nota interna, respostas rápidas (`/assinatura`), tags, vincular contato a cliente.
+  nota interna, respostas rápidas (`/assinatura`), etiquetas, vincular contato a cliente.
 - **Webhook:** `POST /webhooks/whatsapp` público, verificado pela assinatura `X-Hub-Signature-256`
   (segredo do app) e pelo `verify_token` no handshake GET. Idempotente: a Meta reenvia; dedupe pelo
   `wamid`. Responde 200 em < 1 s e processa na fila.
@@ -184,10 +193,14 @@ Decisões:
 | GET/POST | `/webhooks/whatsapp` | pública (assinatura Meta) |
 | POST | `/webhooks/bancos` | pública (assinatura do agregador) |
 | GET | `/atendimento/canais` · POST/PATCH/DELETE `/atendimento/canais[/:id]` | `atendimento:ver` · `atendimento:gerenciar` |
-| GET | `/atendimento/conversas?canal=&estado=&atendente=&search=` | `atendimento:ver` |
-| GET | `/atendimento/conversas/:id/mensagens` (paginada, mais recentes primeiro) | `atendimento:ver` |
-| POST | `/atendimento/conversas/:id/mensagens` `{ tipo: texto|midia|template|nota, ... }` | `atendimento:responder` |
-| PATCH | `/atendimento/conversas/:id/atribuir`, `/transferir`, `/resolver`, `/vincular-cliente` | `atendimento:responder` |
+| GET | `/atendimento/conversas?canal=&estado=&atendente=&search=&page=&pageSize=` → `Paginated<Conversa>` (mais recente `ultimaEm` primeiro) | `atendimento:ver` |
+| GET | `/atendimento/conversas/contagem` → `{ total, porCanal: { [canalId]: n }, naoLidas }` (`total`/`porCanal` = não resolvidas) | `atendimento:ver` |
+| GET | `/atendimento/conversas/:id` → `Conversa` | `atendimento:ver` |
+| GET | `/atendimento/conversas/:id/mensagens?page=&pageSize=` (paginada, mais recentes primeiro) | `atendimento:ver` |
+| POST | `/atendimento/conversas/:id/mensagens` `{ tipo: texto|nota, texto }` ou `{ tipo: template, templateId }` (mídia na fase seguinte) | `atendimento:responder` |
+| PATCH | `/atendimento/conversas/:id/atribuir` `{ atendenteId \| null }`, `/transferir` `{ canalId }`, `/resolver`, `/vincular-cliente` | `atendimento:responder` |
+| PATCH | `/atendimento/conversas/:id/lida` (zera as não lidas de quem abriu) | `atendimento:ver` |
+| GET | `/atendimento/atendentes` → `{ id, nome }[]` (usuários internos que atendem) | `atendimento:ver` |
 | GET | `/atendimento/templates`, `/atendimento/respostas-rapidas` | `atendimento:ver` |
 | WS | `/atendimento` (eventos `mensagem`, `status`, `conversa`) | `atendimento:ver` |
 | POST | `/bancos/vinculos/token` → token do widget do agregador | `bancos:vincular` |
@@ -209,17 +222,26 @@ Variáveis de ambiente novas no back: `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_I
 | POST | `/auth/login` `{ email, password, remember }` → `{ user, accessToken }` + cookie | pública |
 | POST | `/auth/refresh` → `{ user, accessToken }` + cookie novo | cookie |
 | POST | `/auth/logout` | autenticada |
-| GET | `/auth/me` | autenticada |
-| GET | `/dashboard/resumo` | `dashboard:ver` |
+| POST | `/auth/esqueci-senha` `{ email }` → 204 (mesma resposta exista ou não o e-mail) | pública |
+| GET/PATCH | `/auth/me` · PATCH `{ nome, email }` → `AuthUser` (e-mail repetido → 409 `resource/conflict`) | autenticada |
+| GET | `/auth/sessoes` → `{ id, dispositivo, navegador, ultimoAcesso, atual, criadoEm }[]` | autenticada |
+| DELETE | `/auth/sessoes/:id` → 204 (encerra outra sessão do próprio usuário) | autenticada |
+| GET | `/dashboard/resumo` (`aReceber`/`aReceberDelta` vêm `null` sem `financeiro:ver`) | `dashboard:ver` |
 | GET | `/dashboard/receita-mensal` | `financeiro:ver` |
 | GET | `/dashboard/vencimentos` | `obrigacoes:ver` |
 | GET | `/dashboard/atividades` | `dashboard:ver` |
 | GET | `/clientes`, `/clientes/:id` | `clientes:ver` |
 | POST/PATCH/DELETE | `/clientes[/:id]` | `clientes:editar` |
-| GET | `/obrigacoes` | `obrigacoes:ver` |
+| GET | `/obrigacoes?page=&pageSize=&status=&search=&sort=&order=` (busca em tipo, cliente, responsável) | `obrigacoes:ver` |
+| GET | `/obrigacoes/contagem?search=` → `{ pendente, entregue, atrasada, total }` | `obrigacoes:ver` |
 | PATCH | `/obrigacoes/:id/entregar` | `obrigacoes:editar` |
-| GET | `/financeiro/resumo`, `/financeiro/lancamentos` | `financeiro:ver` |
-| GET | `/usuarios` | `usuarios:gerenciar` |
+| GET | `/financeiro/resumo`, `/financeiro/lancamentos?page=&pageSize=&tipo=&status=&search=&sort=&order=` | `financeiro:ver` |
+| GET | `/usuarios?page=&pageSize=&search=&role=&sort=&order=` | `usuarios:gerenciar` |
+
+Observações da fase 1: `PATCH /obrigacoes/:id/entregar` também atualiza `obrigacoesAbertas` e
+`ultimaEntrega` do cliente. `Atividade` (`/dashboard/atividades`) tem os campos `tipo`, `usuario`,
+`descricao`, `cliente`, `em`. Ainda sem rota (o front tem o botão, sem ação): troca de senha
+logado e "encerrar as outras sessões".
 
 Os tipos TypeScript de cada recurso estão em `web/src/features/<modulo>/types.ts`. Enquanto o
 back não gera OpenAPI, esses arquivos são o contrato; depois o back publica `/docs` (Swagger) e o

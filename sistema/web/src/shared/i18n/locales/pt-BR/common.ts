@@ -1,6 +1,7 @@
 export const common = {
   app: 'Stalo',
   brand: 'Stalo Consulting',
+  navLabel: 'Menu principal',
   nav: {
     dashboard: 'Visão geral',
     clientes: 'Clientes',
@@ -12,10 +13,13 @@ export const common = {
     sections: { operacao: 'Operação', gestao: 'Gestão' },
   },
   actions: {
+    searchShortcut: 'Ctrl K',
     search: 'Buscar',
     searchPlaceholder: 'Buscar...',
     filter: 'Filtrar',
     clear: 'Limpar',
+    scrollLeft: 'Ver anteriores',
+    scrollRight: 'Ver mais',
     save: 'Salvar',
     cancel: 'Cancelar',
     close: 'Fechar',
@@ -32,6 +36,7 @@ export const common = {
     retry: 'Tentar de novo',
   },
   table: {
+    actions: 'Ações',
     empty: 'Nada por aqui',
     emptyHint: 'Nenhum registro corresponde aos filtros.',
     rowsPerPage: 'Linhas por página',
@@ -71,13 +76,28 @@ export const common = {
     toggle: 'Alternar tema',
   },
   fontSize: { label: 'Tamanho da fonte', sm: 'Pequena', md: 'Média', lg: 'Grande' },
-  density: { label: 'Densidade', comfortable: 'Confortável', compact: 'Compacta' },
+  density: { label: 'Densidade', comfortable: 'Confortável', medium: 'Média', compact: 'Compacta' },
   language: 'Idioma',
+  languageCurrent: 'Idioma: {name}',
   user: {
     profile: 'Meu perfil',
     loggedAs: 'Conectado como',
   },
   errors: {
+    loadTitle: 'Não foi possível carregar',
+    loadHint: 'Verifique a conexão e tente de novo.',
+    actionFailed: 'Não foi possível concluir a ação.',
+    codes: {
+      'auth/invalid-credentials': 'E-mail ou senha incorretos.',
+      'auth/locked': 'Muitas tentativas. Tente de novo em 15 minutos.',
+      'auth/no-session': 'Sua sessão expirou. Entre de novo.',
+      'auth/forbidden': 'Seu perfil não tem permissão para esta ação.',
+      'validation/invalid-body': 'Confira os campos e tente de novo.',
+      'resource/not-found': 'O registro não foi encontrado.',
+      'resource/conflict': 'Já existe um registro com esses dados.',
+      'rate-limit/exceeded': 'Muitas requisições. Aguarde um pouco.',
+      'internal/error': 'Erro no servidor. Tente de novo em instantes.',
+    },
     title: 'Algo deu errado',
     generic: 'Não foi possível carregar. Tente de novo.',
     forbiddenTitle: 'Sem acesso',
@@ -86,6 +106,8 @@ export const common = {
     notFound: 'O endereço não existe ou foi movido.',
     goHome: 'Ir para a visão geral',
   },
+  /** Campo sem valor (data nunca preenchida, por exemplo). */
+  noValue: '—',
   mockBadge: 'Dados de demonstração',
   loading: 'Carregando',
   yesterday: 'Ontem',

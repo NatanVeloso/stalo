@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { company } from '../data/company'
-import { blogHref, locale, t } from '../i18n'
+import { blogHref, locale, postHref, t } from '../i18n'
 import { hideBoot } from '../lib/boot'
-import { ApiError, fetchPost, formatPostDate, paragraphs, type PostDetail } from '../lib/posts'
+import { ApiError, fetchPost, fetchPosts, formatPostDate, paragraphs, type PostDetail, type PostSummary } from '../lib/posts'
 import { CookieConsent } from './CookieConsent'
+import { Logo } from './Logo'
 import { PageFooter } from './PageFooter'
-import { PageHeader } from './PageHeader'
+import { Header } from './Header'
 
 type Props = { slug: string }
 
@@ -14,6 +15,7 @@ type State = { status: 'loading' } | { status: 'not-found' } | { status: 'error'
 /** /blog/:slug: a publicação inteira, com galeria quando é carrossel. Página estática, sem GSAP. */
 export function PostPage({ slug }: Props) {
   const [state, setState] = useState<State>({ status: 'loading' })
+  const [others, setOthers] = useState<PostSummary[]>([])
 
   useEffect(() => {
     hideBoot()
@@ -23,18 +25,25 @@ export function PostPage({ slug }: Props) {
         setState({ status: 'ready', post })
       })
       .catch((err) => setState({ status: err instanceof ApiError && err.status === 404 ? 'not-found' : 'error' }))
+    // pede um a mais porque o post aberto pode estar entre os recentes; falhar aqui só esconde a coluna
+    fetchPosts({ limit: 5 })
+      .then((list) => setOthers(list.items.filter((p) => p.slug !== slug).slice(0, 4)))
+      .catch(() => setOthers([]))
   }, [slug])
 
   return (
     <div className="min-h-screen bg-ink text-fog">
-      <PageHeader>
-        <a href={blogHref()} className="hidden text-fog/75 transition-colors hover:text-sky md:block">
-          {t.blog.pageTitle}
-        </a>
-      </PageHeader>
+      <Header show />
 
-      <main className="px-6 pb-16 pt-12 md:pt-20">
-        <article className="mx-auto max-w-[760px]">
+      {/* desktop: asterisco decorativo | post | outras publicações; no celular a coluna da direita desce para depois do post */}
+      <main className="px-6 pb-16 pt-28 md:pt-32">
+        <div className="mx-auto grid max-w-[1400px] gap-12 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,720px)_minmax(280px,1.2fr)] xl:gap-14">
+        <aside aria-hidden="true" className="hidden xl:block">
+          <div className="sticky top-28 flex justify-center pt-24">
+            <Logo markOnly className="h-44 w-auto animate-[spin_60s_linear_infinite] text-fog opacity-[0.07] motion-reduce:animate-none" />
+          </div>
+        </aside>
+        <article className="min-w-0">
           <a href={blogHref()} className="mb-8 inline-flex items-center gap-2 text-sm text-fog/70 transition-colors hover:text-sky">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M19 12H5M11 18l-6-6 6-6" />
@@ -55,8 +64,14 @@ export function PostPage({ slug }: Props) {
 
           {state.status === 'ready' && <Post post={state.post} />}
 
-          <PageFooter />
         </article>
+
+        {others.length > 0 && <MorePosts posts={others} />}
+        </div>
+
+        <div className="mx-auto max-w-[760px]">
+          <PageFooter />
+        </div>
       </main>
       <CookieConsent />
     </div>
@@ -199,5 +214,58 @@ function Notice({ children }: { children: string }) {
         {t.blog.back}
       </a>
     </div>
+  )
+}
+
+/** Coluna da direita: outras publicações recentes, em cards compactos (capa + título + data). */
+function MorePosts({ posts }: { posts: PostSummary[] }) {
+  return (
+    <aside aria-labelledby="more-posts" className="min-w-0 xl:pt-16">
+      <div className="flex flex-col gap-4 xl:sticky xl:top-28">
+        <h2 id="more-posts" className="m-0 text-[13px] font-normal uppercase tracking-[0.12em] text-fog/60">
+          {t.blog.morePosts}
+        </h2>
+        <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 xl:grid-cols-1">
+          {posts.map((p) => (
+            <li key={p.id}>
+              <a
+                href={postHref(p.slug)}
+                className="group flex gap-4 rounded-2xl border border-white/[0.1] bg-white/[0.04] p-3 transition-colors duration-300 hover:bg-white/[0.08]"
+              >
+                <div className="relative h-[88px] w-[70px] shrink-0 overflow-hidden rounded-xl bg-white/[0.06]">
+                  {p.coverUrl ? (
+                    <img
+                      src={p.coverUrl}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(135deg,#0b1220,#13213a_60%,#0d2622)] text-fog/70">
+                      <Logo markOnly className="h-7 w-auto" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex min-w-0 flex-col justify-center gap-1.5">
+                  <time dateTime={p.publishedAt} className="text-[12px] text-fog/55">
+                    {formatPostDate(p.publishedAt, locale)}
+                  </time>
+                  <span className="line-clamp-3 text-[15px] font-medium leading-[1.3] text-fog transition-colors group-hover:text-sky">
+                    {p.title}
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href={blogHref()} className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-sky transition-colors hover:text-white">
+          {t.blog.viewAll}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
+      </div>
+    </aside>
   )
 }

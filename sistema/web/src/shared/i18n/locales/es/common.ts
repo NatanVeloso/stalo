@@ -3,6 +3,7 @@ import type { Dictionary } from '../pt-BR'
 export const common: Dictionary['common'] = {
   app: 'Stalo',
   brand: 'Stalo Consulting',
+  navLabel: 'Menú principal',
   nav: {
     dashboard: 'Visión general',
     clientes: 'Clientes',
@@ -14,10 +15,13 @@ export const common: Dictionary['common'] = {
     sections: { operacao: 'Operación', gestao: 'Gestión' },
   },
   actions: {
+    searchShortcut: 'Ctrl K',
     search: 'Buscar',
     searchPlaceholder: 'Buscar...',
     filter: 'Filtrar',
     clear: 'Limpiar',
+    scrollLeft: 'Ver anteriores',
+    scrollRight: 'Ver más',
     save: 'Guardar',
     cancel: 'Cancelar',
     close: 'Cerrar',
@@ -34,6 +38,7 @@ export const common: Dictionary['common'] = {
     retry: 'Intentar de nuevo',
   },
   table: {
+    actions: 'Acciones',
     empty: 'Nada por aquí',
     emptyHint: 'Ningún registro coincide con los filtros.',
     rowsPerPage: 'Filas por página',
@@ -73,13 +78,28 @@ export const common: Dictionary['common'] = {
     toggle: 'Cambiar tema',
   },
   fontSize: { label: 'Tamaño de fuente', sm: 'Pequeña', md: 'Media', lg: 'Grande' },
-  density: { label: 'Densidad', comfortable: 'Cómoda', compact: 'Compacta' },
+  density: { label: 'Densidad', comfortable: 'Cómoda', medium: 'Media', compact: 'Compacta' },
   language: 'Idioma',
+  languageCurrent: 'Idioma: {name}',
   user: {
     profile: 'Mi perfil',
     loggedAs: 'Conectado como',
   },
   errors: {
+    loadTitle: 'No se pudo cargar',
+    loadHint: 'Revisa la conexión e inténtalo de nuevo.',
+    actionFailed: 'No se pudo completar la acción.',
+    codes: {
+      'auth/invalid-credentials': 'Correo o contraseña incorrectos.',
+      'auth/locked': 'Demasiados intentos. Inténtalo de nuevo en 15 minutos.',
+      'auth/no-session': 'Tu sesión expiró. Inicia sesión de nuevo.',
+      'auth/forbidden': 'Tu perfil no tiene permiso para esta acción.',
+      'validation/invalid-body': 'Revisa los campos e inténtalo de nuevo.',
+      'resource/not-found': 'No se encontró el registro.',
+      'resource/conflict': 'Ya existe un registro con estos datos.',
+      'rate-limit/exceeded': 'Demasiadas solicitudes. Espera un momento.',
+      'internal/error': 'Error del servidor. Inténtalo de nuevo en breve.',
+    },
     title: 'Algo salió mal',
     generic: 'No se pudo cargar. Inténtalo de nuevo.',
     forbiddenTitle: 'Sin acceso',
@@ -88,6 +108,8 @@ export const common: Dictionary['common'] = {
     notFound: 'La dirección no existe o fue movida.',
     goHome: 'Ir a la visión general',
   },
+  /** Campo sem valor (data nunca preenchida, por exemplo). */
+  noValue: '—',
   mockBadge: 'Datos de demostración',
   loading: 'Cargando',
   yesterday: 'Ayer',

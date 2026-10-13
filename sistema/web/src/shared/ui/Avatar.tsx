@@ -3,7 +3,7 @@ import { initials } from '@/shared/lib/format'
 
 type Props = { name: string; src?: string; size?: 'sm' | 'md' | 'lg'; className?: string }
 
-const sizes = { sm: 'size-7 text-[11px]', md: 'size-9 text-xs', lg: 'size-14 text-base' }
+const sizes = { sm: 'size-7 text-caption', md: 'size-9 text-xs', lg: 'size-14 text-base' }
 
 export function Avatar({ name, src, size = 'md', className }: Props) {
   return (

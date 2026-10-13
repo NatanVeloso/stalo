@@ -1,5 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react'
-import { fontSizePx, usePrefs, type ThemePref } from '@/shared/prefs/prefs.store'
+import { rootFontPx, usePrefs, type ThemePref } from '@/shared/prefs/prefs.store'
 
 export type ResolvedTheme = 'light' | 'dark'
 
@@ -43,14 +43,14 @@ export function useApplyPrefs() {
     document.documentElement.lang = locale
   }, [locale])
   useEffect(() => {
-    document.documentElement.style.fontSize = `${fontSizePx[fontSize]}px`
+    document.documentElement.style.fontSize = `${rootFontPx(fontSize, density)}px`
     document.documentElement.dataset.density = density
   }, [fontSize, density])
 }
 
-/** `true` no modo compacto: para componentes que precisam de valor em JS (altura de gráfico). */
-export function useCompact() {
-  return usePrefs((s) => s.density === 'compact')
+/** Densidade atual, para componentes que precisam de valor em JS (altura de gráfico). */
+export function useDensity() {
+  return usePrefs((s) => s.density)
 }
 
 export function useThemePref(): [ThemePref, (t: ThemePref) => void] {

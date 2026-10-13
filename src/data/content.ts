@@ -1,4 +1,4 @@
-import { blogHref, t, type Dictionary } from '../i18n'
+import { blogHref, equipeHref, sobreHref, t, type Dictionary } from '../i18n'
 import { company } from './company'
 
 /**
@@ -9,7 +9,9 @@ import { company } from './company'
 
 export const nav = [
   { label: t.nav.services, href: '#servicos' },
-  { label: t.nav.about, href: '#sobre' },
+  /* "Sobre" e "Equipe" são PÁGINAS (12/10/2026); a section #sobre da home leva a elas. */
+  { label: t.nav.about, href: sobreHref() },
+  { label: t.nav.team, href: equipeHref() },
   { label: t.nav.process, href: '#processo' },
   { label: t.nav.blog, href: blogHref() },
   { label: t.nav.faq, href: '#faq' },
@@ -65,14 +67,14 @@ const stepMedia: { id: StepId; image: string; tone: StepTone; bg: string }[] = [
   {
     id: 'strategy',
     image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1400&q=80',
-    tone: 'light',
-    bg: 'bg-paper',
+    tone: 'dark',
+    bg: 'bg-teal-deep',
   },
   {
     id: 'support',
     image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80',
-    tone: 'dark',
-    bg: 'bg-teal-deep',
+    tone: 'light',
+    bg: 'bg-paper',
   },
 ]
 
@@ -134,11 +136,24 @@ export const footerLinks = [
   { label: t.footer.links.contact, href: '#contato' },
   { label: t.footer.links.faq, href: '#faq' },
   { label: t.footer.links.blog, href: blogHref() },
+  { label: t.footer.links.about, href: sobreHref() },
+  { label: t.footer.links.team, href: equipeHref() },
 ]
+
+/**
+ * Pessoas da página "Equipe", na MESMA ordem de `t.team.members` (a função e a
+ * área vêm do dicionário, traduzidas). ⚠ Vazio até a Stalo enviar nomes e
+ * fotos: sem nome, o card mostra a função; sem foto, a marca da Stalo.
+ * Foto: retrato 4:5, em public/equipe (ex.: '/equipe/fulano.webp').
+ */
+const teamPeople: { name?: string; photo?: string; linkedin?: string }[] = []
+
+export const team = t.team.members.map((m, i) => ({ ...m, ...teamPeople[i] }))
 
 export const images = {
   hero: '/videos/hero-poster.jpg', // primeiro quadro de videos.hero
   about: '/sobre.webp',
+  aboutHome: '/sobre/ceo.webp', // retrato do CEO (Instagram, recorte 4:5 sem o texto do post): "Sobre" da home
   contact: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80',
 }
 

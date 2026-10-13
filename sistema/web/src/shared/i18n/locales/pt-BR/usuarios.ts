@@ -4,6 +4,8 @@ export const usuarios = {
   invite: 'Convidar usuário',
   columns: { usuario: 'Usuário', perfil: 'Perfil', ultimoAcesso: 'Último acesso', status: 'Status' },
   never: 'Nunca acessou',
+  searchPlaceholder: 'Buscar por nome ou e-mail',
+  filters: { role: 'Filtrar por perfil', allRoles: 'Todos os perfis' },
   rolesHelp: {
     admin: 'Tudo, inclusive usuários e configurações do escritório.',
     contador: 'Clientes, obrigações e financeiro.',

@@ -21,9 +21,12 @@
         var theme = (saved && saved.theme) || 'system'
         if (theme === 'system') theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
         document.documentElement.dataset.theme = theme
+        var density = (saved && saved.density) || 'comfortable'
         var px = { sm: 14, md: 16, lg: 18 }[(saved && saved.fontSize) || 'md'] || 16
+        // compacto encolhe a fonte raiz (mesmo fator de compactFontScale em shared/prefs)
+        if (density === 'compact') px = Math.round(px * 0.92 * 10) / 10
         document.documentElement.style.fontSize = px + 'px'
-        document.documentElement.dataset.density = (saved && saved.density) || 'comfortable'
+        document.documentElement.dataset.density = density
       } catch (e) {
         document.documentElement.dataset.theme = 'dark'
       }

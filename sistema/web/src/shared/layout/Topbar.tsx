@@ -8,7 +8,7 @@ import { LanguageMenu } from '@/shared/i18n/LanguageMenu'
 import { ThemeToggle } from '@/shared/theme/ThemeToggle'
 import { useAuth } from '@/shared/auth'
 import { useLiquidGlass } from '@/shared/hooks/useLiquidGlass'
-import { Avatar, Badge, IconButton, Menu, MenuItem, MenuSeparator } from '@/shared/ui'
+import { Avatar, Badge, IconButton, Menu, MenuItem, MenuLabel, MenuSeparator } from '@/shared/ui'
 
 type Props = { onOpenMenu: () => void }
 
@@ -29,8 +29,8 @@ export function Topbar({ onOpenMenu }: Props) {
       <div
         ref={pill}
         className={cn(
-          'relative isolate flex h-14 items-center gap-2 rounded-full border border-(--glass-border) pr-2 pl-2 shadow-[inset_0_1px_0_var(--glass-highlight),var(--glass-shadow)]',
-          glass ? 'bg-(--glass)' : 'glass',
+          'relative isolate flex h-14 items-center gap-2 rounded-full pr-2 pl-2',
+          glass ? 'border border-(--glass-border) bg-(image:--glass) glass-rim shadow-(--glass-shadow)' : 'glass',
         )}
       >
         {glass && (
@@ -105,8 +105,8 @@ export function Topbar({ onOpenMenu }: Props) {
         >
           <Search className="size-4" aria-hidden="true" />
           <span className="hidden sm:inline">{t.common.actions.searchPlaceholder}</span>
-          <kbd className="ml-auto hidden rounded-md border border-line px-1.5 py-0.5 font-sans text-[11px] text-fg-subtle md:inline">
-            Ctrl K
+          <kbd className="ml-auto hidden rounded-full border border-line px-2 py-0.5 font-sans text-caption text-fg-subtle md:inline">
+            {t.common.actions.searchShortcut}
           </kbd>
         </button>
 
@@ -124,50 +124,32 @@ export function Topbar({ onOpenMenu }: Props) {
           <LanguageMenu />
           {user && (
             <Menu
-              trigger={({ toggle, ...aria }) => (
+              trigger={
                 <button
                   type="button"
-                  onClick={toggle}
                   className="ml-1 rounded-full transition-transform active:scale-95"
                   aria-label={user.nome}
-                  {...aria}
                 >
                   <Avatar name={user.nome} />
                 </button>
-              )}
+              }
             >
-              {(close) => (
-                <>
-                  <div className="px-3 py-2">
-                    <p className="text-[11px] text-fg-subtle">{t.common.user.loggedAs}</p>
-                    <p className="truncate text-sm font-medium">{user.nome}</p>
-                    <p className="truncate text-xs text-fg-muted">{user.email}</p>
-                  </div>
-                  <MenuSeparator />
-                  <MenuItem
-                    icon={<UserRound />}
-                    onSelect={() => {
-                      close()
-                      void navigate('/configuracoes')
-                    }}
-                  >
-                    {t.common.user.profile}
-                  </MenuItem>
-                  <MenuItem
-                    icon={<Settings />}
-                    onSelect={() => {
-                      close()
-                      void navigate('/configuracoes')
-                    }}
-                  >
-                    {t.common.nav.configuracoes}
-                  </MenuItem>
-                  <MenuSeparator />
-                  <MenuItem icon={<LogOut />} tone="danger" onSelect={() => void logout()}>
-                    {t.common.actions.logout}
-                  </MenuItem>
-                </>
-              )}
+              <MenuLabel>
+                <span className="block text-caption font-normal text-fg-subtle">{t.common.user.loggedAs}</span>
+                <span className="block truncate text-sm font-medium">{user.nome}</span>
+                <span className="block truncate text-xs font-normal text-fg-muted">{user.email}</span>
+              </MenuLabel>
+              <MenuSeparator />
+              <MenuItem icon={<UserRound />} onSelect={() => void navigate('/configuracoes')}>
+                {t.common.user.profile}
+              </MenuItem>
+              <MenuItem icon={<Settings />} onSelect={() => void navigate('/configuracoes')}>
+                {t.common.nav.configuracoes}
+              </MenuItem>
+              <MenuSeparator />
+              <MenuItem icon={<LogOut />} tone="danger" onSelect={() => void logout()}>
+                {t.common.actions.logout}
+              </MenuItem>
             </Menu>
           )}
         </div>

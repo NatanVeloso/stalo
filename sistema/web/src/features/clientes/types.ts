@@ -20,12 +20,20 @@ export type Cliente = {
   obrigacoesAbertas: number
   documentos: number
   ultimaEntrega: string | null
+  criadoEm: string
+  atualizadoEm: string
 }
 
+/** Campos aceitos em `sort` (ordenação no servidor). */
+export type ClientesSort = 'nomeFantasia' | 'regime' | 'responsavel' | 'honorario' | 'desde' | 'status'
+
+/** Query de `GET /clientes` (DOMINIO.md → Lista paginada). */
 export type ClientesFiltro = {
-  search?: string
-  regime?: RegimeTributario | ''
-  status?: ClienteStatus | ''
   page: number
   pageSize: number
+  search?: string
+  sort?: ClientesSort
+  order?: 'asc' | 'desc'
+  regime?: RegimeTributario | ''
+  status?: ClienteStatus | ''
 }

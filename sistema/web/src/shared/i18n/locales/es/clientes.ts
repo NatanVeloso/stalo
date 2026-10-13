@@ -17,6 +17,7 @@ export const clientes: Dictionary['clientes'] = {
   },
   detail: {
     title: 'Detalles del cliente',
+    description: '{razaoSocial} · {cnpj}',
     contato: 'Contacto',
     email: 'Correo',
     telefone: 'Teléfono',

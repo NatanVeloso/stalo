@@ -4,6 +4,8 @@ export const financeiro = {
   new: 'Novo lançamento',
   kpis: { recebido: 'Recebido no mês', aReceber: 'A receber', vencido: 'Vencido', despesas: 'Despesas do mês' },
   tabs: { todos: 'Todos', receitas: 'Receitas', despesas: 'Despesas' },
+  filters: { tipo: 'Filtrar por tipo', status: 'Filtrar por status', allStatus: 'Todos os status' },
+  searchPlaceholder: 'Buscar por descrição ou cliente',
   columns: {
     descricao: 'Descrição',
     cliente: 'Cliente',

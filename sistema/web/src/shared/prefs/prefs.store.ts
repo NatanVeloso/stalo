@@ -10,20 +10,34 @@ import { defaultLocale, locales, type Locale } from '@/shared/i18n/locales'
 export type ThemePref = 'light' | 'dark' | 'system'
 /** Escala da fonte raiz: tudo em rem acompanha (texto, espaçamento, raios). */
 export type FontSizePref = 'sm' | 'md' | 'lg'
-/** Densidade: compacta reduz paddings, altura de linha e de gráfico (tokens em styles/index.css). */
-export type DensityPref = 'comfortable' | 'compact'
+/** Densidade: média e compacta reduzem paddings, altura de linha e de gráfico (tokens em styles/index.css);
+ * a compacta encolhe também a fonte raiz. */
+export type DensityPref = 'comfortable' | 'medium' | 'compact'
 
 export const fontSizePx: Record<FontSizePref, number> = { sm: 14, md: 16, lg: 18 }
+/** No modo compacto a fonte raiz encolhe este tanto (mesmo valor no script do index.html). */
+export const compactFontScale = 0.92
+
+/** Tamanho da fonte raiz em px para a combinação de preferências. */
+export function rootFontPx(fontSize: FontSizePref, density: DensityPref) {
+  return Math.round(fontSizePx[fontSize] * (density === 'compact' ? compactFontScale : 1) * 10) / 10
+}
+
+/** Sons do atendimento: ao enviar uma mensagem e ao chegar mensagem do contato. */
+export type SomPref = 'somAoEnviar' | 'somAoReceber'
 
 type PrefsState = {
   theme: ThemePref
   locale: Locale
   fontSize: FontSizePref
   density: DensityPref
+  somAoEnviar: boolean
+  somAoReceber: boolean
   setTheme: (theme: ThemePref) => void
   setLocale: (locale: Locale) => void
   setFontSize: (fontSize: FontSizePref) => void
   setDensity: (density: DensityPref) => void
+  setSom: (som: SomPref, on: boolean) => void
 }
 
 function browserLocale(): Locale {
@@ -40,10 +54,13 @@ export const usePrefs = create<PrefsState>()(
       locale: browserLocale(),
       fontSize: 'md',
       density: 'comfortable',
+      somAoEnviar: true,
+      somAoReceber: true,
       setTheme: (theme) => set({ theme }),
       setLocale: (locale) => set({ locale }),
       setFontSize: (fontSize) => set({ fontSize }),
       setDensity: (density) => set({ density }),
+      setSom: (som, on) => set({ [som]: on }),
     }),
     { name: 'stalo-sistema:prefs' },
   ),

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { gsap, useGSAP, ScrollTrigger, ScrollSmoother, heavy } from './lib/gsap'
 import { Preloader } from './components/Preloader'
-import { Header } from './components/Header'
+import { Header, scrollToAnchor } from './components/Header'
+import { takeHash } from './lib/hash'
 import { Hero } from './components/Hero'
 import { Services } from './components/Services'
 import { About } from './components/About'
@@ -73,6 +74,9 @@ export default function App({ posts }: Props) {
       if (!intro) return
       ScrollSmoother.get()?.paused(false)
       ScrollTrigger.refresh()
+      // veio de outra página pelo header (ex.: /sobre → /#faq): rola até a âncora quando a home liberar
+      const hash = takeHash()
+      if (hash && document.querySelector(hash)) scrollToAnchor(hash, false)
     },
     { dependencies: [intro] },
   )

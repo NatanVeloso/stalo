@@ -12,6 +12,21 @@ export const configuracoes: Dictionary['configuracoes'] = {
     seguranca: { title: 'Seguridad', description: 'Sesiones activas y contraseña.' },
   },
   fields: { nome: 'Nombre', email: 'Correo', cargo: 'Perfil' },
-  sessions: { title: 'Sesiones activas', current: 'Esta sesión', revoke: 'Cerrar', revokeAll: 'Cerrar las demás' },
+  sessions: {
+    title: 'Sesiones activas',
+    current: 'Esta sesión',
+    revoke: 'Cerrar',
+    revokeAll: 'Cerrar las demás',
+    revoked: 'Sesión cerrada.',
+    empty: 'No hay sesiones activas',
+    device: '{dispositivo} · {navegador}',
+    meta: 'Activa {quando} · desde {data}',
+  },
+  saved: 'Perfil guardado.',
+  errors: {
+    nomeRequired: 'Ingresa el nombre.',
+    emailRequired: 'Ingresa el correo.',
+    emailInvalid: 'Correo inválido.',
+  },
   changePassword: 'Cambiar contraseña',
 }

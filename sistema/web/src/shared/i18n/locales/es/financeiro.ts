@@ -6,6 +6,8 @@ export const financeiro: Dictionary['financeiro'] = {
   new: 'Nuevo registro',
   kpis: { recebido: 'Recibido en el mes', aReceber: 'Por cobrar', vencido: 'Vencido', despesas: 'Gastos del mes' },
   tabs: { todos: 'Todos', receitas: 'Ingresos', despesas: 'Gastos' },
+  filters: { tipo: 'Filtrar por tipo', status: 'Filtrar por estado', allStatus: 'Todos los estados' },
+  searchPlaceholder: 'Buscar por descripción o cliente',
   columns: {
     descricao: 'Descripción',
     cliente: 'Cliente',

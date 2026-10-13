@@ -1,81 +1,46 @@
 import { useState } from 'react'
-import { ArrowDownLeft, ArrowUpRight, Plus } from 'lucide-react'
-import { useT, useLocale } from '@/shared/i18n'
+import { Plus } from 'lucide-react'
+import { useT } from '@/shared/i18n'
 import { usePermission } from '@/shared/auth'
-import { cn } from '@/shared/lib/cn'
-import { formatCurrency, formatDate } from '@/shared/lib/format'
+import { useDebounce } from '@/shared/hooks/useDebounce'
 import { PageHeader } from '@/shared/layout'
-import { Badge, Button, Card, DataTable, Segmented, StatTile, type BadgeTone, type Column } from '@/shared/ui'
-import { useFinanceiroResumo, useLancamentos } from '../queries'
-import type { Lancamento, LancamentoStatus, LancamentoTipo } from '../types'
+import { Button, Card, DataTable, Pagination, SearchInput, Segmented, Select, type SortState } from '@/shared/ui'
+import { useLancamentos } from '../queries'
+import type { LancamentoSort, LancamentoStatus, LancamentoTipo } from '../types'
+import { ResumoTiles } from '../components/ResumoTiles'
+import { useLancamentoColumns } from '../components/useLancamentoColumns'
 
-const statusTone: Record<LancamentoStatus, BadgeTone> = { pago: 'ok', emAberto: 'neutral', vencido: 'danger' }
+const PAGE_SIZE = 10
+const statuses: LancamentoStatus[] = ['pago', 'emAberto', 'vencido']
 
 export function FinanceiroPage() {
   const t = useT()
-  const locale = useLocale()
   const podeEditar = usePermission('financeiro:editar')
+  const columns = useLancamentoColumns()
   const [tipo, setTipo] = useState<LancamentoTipo | ''>('')
-  const resumo = useFinanceiroResumo()
-  const list = useLancamentos(tipo)
-  const r = resumo.data
+  const [status, setStatus] = useState<LancamentoStatus | ''>('')
+  const [search, setSearch] = useState('')
+  const [sort, setSort] = useState<SortState>(null)
+  const [page, setPage] = useState(1)
+  const debounced = useDebounce(search)
 
-  const columns: Column<Lancamento>[] = [
-    {
-      key: 'descricao',
-      header: t.financeiro.columns.descricao,
-      sortValue: (l) => l.descricao,
-      cell: (l) => (
-        <span className="flex items-center gap-3">
-          <span
-            className={cn(
-              'flex size-8 shrink-0 items-center justify-center rounded-xl',
-              l.tipo === 'receita' ? 'bg-ok-soft text-ok' : 'bg-fg/[0.06] text-fg-muted',
-            )}
-            aria-label={t.financeiro.tipos[l.tipo]}
-          >
-            {l.tipo === 'receita' ? <ArrowDownLeft className="size-4" /> : <ArrowUpRight className="size-4" />}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate font-medium">{l.descricao}</span>
-            <span className="block truncate text-xs text-fg-muted">{t.financeiro.categorias[l.categoria]}</span>
-          </span>
-        </span>
-      ),
-    },
-    {
-      key: 'cliente',
-      header: t.financeiro.columns.cliente,
-      hideOnMobile: true,
-      sortValue: (l) => l.cliente ?? '',
-      cell: (l) => l.cliente ?? <span className="text-fg-subtle">—</span>,
-    },
-    {
-      key: 'vencimento',
-      header: t.financeiro.columns.vencimento,
-      hideOnMobile: true,
-      sortValue: (l) => l.vencimento,
-      cell: (l) => <span className="tabular">{formatDate(l.vencimento, locale)}</span>,
-    },
-    {
-      key: 'valor',
-      header: t.financeiro.columns.valor,
-      align: 'right',
-      sortValue: (l) => l.valor,
-      cell: (l) => (
-        <span className={cn('font-medium tabular', l.tipo === 'despesa' && 'text-fg-muted')}>
-          {l.tipo === 'despesa' ? '−' : ''}
-          {formatCurrency(l.valor, locale)}
-        </span>
-      ),
-    },
-    {
-      key: 'status',
-      header: t.financeiro.columns.status,
-      sortValue: (l) => l.status,
-      cell: (l) => <Badge tone={statusTone[l.status]}>{t.common.status[l.status]}</Badge>,
-    },
-  ]
+  const list = useLancamentos({
+    page,
+    pageSize: PAGE_SIZE,
+    tipo,
+    status,
+    search: debounced,
+    sort: sort?.key as LancamentoSort | undefined,
+    order: sort?.order,
+  })
+
+  // filtro ou ordenação novos mudam o conjunto: volta para a primeira página
+  const resetando =
+    <V,>(set: (v: V) => void) =>
+    (v: V) => {
+      set(v)
+      setPage(1)
+    }
 
   return (
     <>
@@ -85,43 +50,56 @@ export function FinanceiroPage() {
         actions={podeEditar && <Button leading={<Plus className="size-4" />}>{t.financeiro.new}</Button>}
       />
 
-      <section className="animate-rise grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-4">
-        <StatTile
-          label={t.financeiro.kpis.recebido}
-          loading={resumo.isPending}
-          value={r && formatCurrency(r.recebidoMes, locale, { compact: true })}
-        />
-        <StatTile
-          label={t.financeiro.kpis.aReceber}
-          loading={resumo.isPending}
-          value={r && formatCurrency(r.aReceber, locale, { compact: true })}
-        />
-        <StatTile
-          label={t.financeiro.kpis.vencido}
-          loading={resumo.isPending}
-          value={r && formatCurrency(r.vencido, locale, { compact: true })}
-        />
-        <StatTile
-          label={t.financeiro.kpis.despesas}
-          loading={resumo.isPending}
-          value={r && formatCurrency(r.despesasMes, locale, { compact: true })}
-        />
-      </section>
+      <ResumoTiles />
 
-      <Card padding="none" className="animate-rise mt-4">
-        <div className="p-4">
+      <Card padding="none" className="animate-rise mt-(--stack-y)">
+        <div className="flex flex-col gap-3 p-(--card-p) lg:flex-row lg:items-center">
           <Segmented<LancamentoTipo | ''>
-            label={t.financeiro.tabs.todos}
+            label={t.financeiro.filters.tipo}
             value={tipo}
-            onChange={setTipo}
+            onChange={resetando(setTipo)}
             options={[
               { value: '', label: t.financeiro.tabs.todos },
               { value: 'receita', label: t.financeiro.tabs.receitas },
               { value: 'despesa', label: t.financeiro.tabs.despesas },
             ]}
           />
+          <div className="flex flex-1 flex-col gap-2 sm:flex-row lg:justify-end">
+            <SearchInput
+              value={search}
+              onChange={resetando(setSearch)}
+              placeholder={t.financeiro.searchPlaceholder}
+              className="sm:max-w-xs sm:flex-1"
+            />
+            <Select
+              size="sm"
+              aria-label={t.financeiro.filters.status}
+              value={status}
+              onChange={(v) => resetando(setStatus)(v as LancamentoStatus | '')}
+              options={[
+                { value: '', label: t.financeiro.filters.allStatus },
+                ...statuses.map((s) => ({ value: s, label: t.common.status[s] })),
+              ]}
+              className="sm:w-44"
+            />
+          </div>
         </div>
-        <DataTable columns={columns} rows={list.data ?? []} rowKey={(l) => l.id} loading={list.isPending} />
+
+        <div className={list.isPlaceholderData ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
+          <DataTable
+            columns={columns}
+            rows={list.data?.items ?? []}
+            rowKey={(l) => l.id}
+            loading={list.isPending}
+            error={list.isError}
+            onRetry={() => void list.refetch()}
+            sort={sort}
+            onSortChange={resetando(setSort)}
+          />
+        </div>
+        {list.data && list.data.total > 0 && !list.isError && (
+          <Pagination page={page} pageSize={PAGE_SIZE} total={list.data.total} onChange={setPage} />
+        )}
       </Card>
     </>
   )

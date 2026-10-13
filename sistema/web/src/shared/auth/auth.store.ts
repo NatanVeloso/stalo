@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { configureHttp } from '@/shared/lib/http'
+import { queryClient } from '@/shared/lib/queryClient'
 import type { Role } from './permissions'
 import { authApi } from './auth.api'
 
@@ -9,7 +10,8 @@ export type AuthUser = {
   nome: string
   email: string
   role: Role
-  avatarUrl?: string
+  /** URL da foto; sem ela o avatar mostra as iniciais. */
+  fotoUrl?: string
 }
 
 type AuthStatus = 'booting' | 'anonymous' | 'authenticated'
@@ -19,10 +21,13 @@ type AuthState = {
   user: AuthUser | null
   /** Só em memória: nunca vai para o localStorage. O refresh fica no cookie httpOnly. */
   accessToken: string | null
-  login: (email: string, password: string) => Promise<void>
+  /** `remember` = "manter conectado": o back estende o refresh para 30 dias. */
+  login: (email: string, password: string, remember: boolean) => Promise<void>
   logout: () => Promise<void>
   /** Na carga: tenta renovar a sessão pelo cookie. Sem cookie válido → anônimo. */
   bootstrap: () => Promise<void>
+  /** Atualiza os dados do usuário logado (ex.: perfil salvo em Configurações). */
+  setUser: (user: AuthUser) => void
 }
 
 export const useAuth = create<AuthState>()(
@@ -32,19 +37,25 @@ export const useAuth = create<AuthState>()(
       user: null,
       accessToken: null,
 
-      async login(email, password) {
-        const { user, accessToken } = await authApi.login(email, password)
+      async login(email, password, remember) {
+        const { user, accessToken } = await authApi.login(email, password, remember)
+        // outro usuário pode ter usado a aba antes: nada do cache dele pode aparecer
+        queryClient.clear()
         set({ user, accessToken, status: 'authenticated' })
       },
 
       async logout() {
         const token = get().accessToken
-        set({ user: null, accessToken: null, status: 'anonymous' })
+        endSession()
         try {
           await authApi.logout(token)
         } catch {
           /* a sessão local já foi encerrada; o cookie expira sozinho */
         }
+      },
+
+      setUser(user) {
+        set({ user })
       },
 
       async bootstrap() {
@@ -72,8 +83,14 @@ export const useAuth = create<AuthState>()(
 configureHttp({
   getAccessToken: () => useAuth.getState().accessToken,
   setAccessToken: (accessToken) => useAuth.setState({ accessToken }),
-  onUnauthorized: () => useAuth.setState({ user: null, accessToken: null, status: 'anonymous' }),
+  onUnauthorized: endSession,
 })
+
+/** Encerra a sessão local e descarta o cache das queries (dados do usuário que saiu). */
+function endSession() {
+  useAuth.setState({ user: null, accessToken: null, status: 'anonymous' })
+  queryClient.clear()
+}
 
 export function useCurrentUser() {
   return useAuth((s) => s.user)

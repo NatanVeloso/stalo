@@ -1,12 +1,46 @@
-import type { Canal, Conversa, Mensagem } from '@/features/atendimento'
+import type { Atendente, Canal, Conversa, Mensagem, MensagemEvento, Template } from '@/features/atendimento'
 import { hoursFromNow } from '../util'
+import { mockUsers } from './usuarios'
+
+const desde = hoursFromNow(-24 * 400)
 
 export const mockCanais: Canal[] = [
-  { id: 'fiscal', nome: 'Fiscal', atendentes: 2 },
-  { id: 'dp', nome: 'Departamento Pessoal', atendentes: 1 },
-  { id: 'financeiro', nome: 'Financeiro', atendentes: 1 },
-  { id: 'comercial', nome: 'Comercial', atendentes: 1 },
+  { id: 'fiscal', nome: 'Fiscal', atendentes: 2, criadoEm: desde, atualizadoEm: desde },
+  { id: 'dp', nome: 'Departamento Pessoal', atendentes: 1, criadoEm: desde, atualizadoEm: desde },
+  { id: 'financeiro', nome: 'Financeiro', atendentes: 1, criadoEm: desde, atualizadoEm: desde },
+  { id: 'comercial', nome: 'Comercial', atendentes: 1, criadoEm: desde, atualizadoEm: desde },
 ]
+
+/** Usuários internos (todo perfil menos `cliente`) podem receber conversas. */
+export const mockAtendentes: Atendente[] = mockUsers
+  .filter((u) => u.role !== 'cliente')
+  .map((u) => ({ id: u.id, nome: u.nome, criadoEm: desde, atualizadoEm: desde }))
+
+export const mockTemplates: Template[] = [
+  {
+    id: 'tp1',
+    nome: 'Retomar contato',
+    texto: 'Olá! Aqui é a equipe da Stalo Contabilidade. Podemos continuar o seu atendimento por aqui?',
+    criadoEm: desde,
+    atualizadoEm: desde,
+  },
+  {
+    id: 'tp2',
+    nome: 'Documentos pendentes',
+    texto: 'Olá! Identificamos documentos pendentes para fechar o mês da sua empresa. Pode nos enviar até sexta?',
+    criadoEm: desde,
+    atualizadoEm: desde,
+  },
+  {
+    id: 'tp3',
+    nome: 'Guia disponível',
+    texto: 'Olá! A guia do mês já está disponível. Quer que enviemos por aqui?',
+    criadoEm: desde,
+    atualizadoEm: desde,
+  },
+]
+
+const atendenteId = (nome: string | null) => mockAtendentes.find((a) => a.nome === nome)?.id ?? null
 
 type Seed = {
   id: string
@@ -17,8 +51,11 @@ type Seed = {
   canalId: string
   estado: Conversa['estado']
   atendente: string | null
-  tags?: string[]
-  /** [de, texto, horas atrás, tipo?] — a última do contato define a janela de 24 h. */
+  etiquetas?: string[]
+  /**
+   * [de, texto, horas atrás, tipo?] — a última do contato define a janela de 24 h.
+   * Em mensagem de sistema, o "texto" é o evento.
+   */
   msgs: Array<[Mensagem['de'], string, number, Mensagem['tipo']?]>
 }
 
@@ -32,11 +69,11 @@ const seeds: Seed[] = [
     canalId: 'fiscal',
     estado: 'em_atendimento',
     atendente: 'Walex Mateus',
-    tags: ['urgente'],
+    etiquetas: ['urgente'],
     msgs: [
       ['contato', 'Bom dia! Recebi uma notificação da Receita sobre a DCTF de agosto. Vocês podem verificar?', -3.2],
       ['atendente', 'Bom dia, Rafael! Vou conferir o protocolo de entrega e já te retorno.', -3.0],
-      ['sistema', 'Conversa atribuída a Walex Mateus', -3.0],
+      ['sistema', 'atribuida', -3.0],
       [
         'atendente',
         'Nota: protocolo 2026-08-DCTF-0912 consta como entregue em 14/09. Notificação parece ser de retificação.',
@@ -94,7 +131,7 @@ const seeds: Seed[] = [
     canalId: 'comercial',
     estado: 'aberta',
     atendente: null,
-    tags: ['lead'],
+    etiquetas: ['lead'],
     msgs: [
       [
         'contato',
@@ -128,7 +165,7 @@ const seeds: Seed[] = [
     canalId: 'dp',
     estado: 'em_atendimento',
     atendente: 'Emanoel Oliveira',
-    tags: ['rescisão'],
+    etiquetas: ['rescisão'],
     msgs: [
       [
         'contato',
@@ -160,7 +197,7 @@ const seeds: Seed[] = [
       ['atendente', 'Claro! Segue.', -49.8],
       ['atendente', 'Boleto_09-2026_Brainrot.pdf', -49.7, 'midia'],
       ['contato', 'Valeu!', -49.5],
-      ['sistema', 'Conversa resolvida por Ana Souza', -49],
+      ['sistema', 'resolvida', -49],
     ],
   },
   {
@@ -172,7 +209,7 @@ const seeds: Seed[] = [
     canalId: 'fiscal',
     estado: 'aberta',
     atendente: null,
-    tags: ['atrasada'],
+    etiquetas: ['atrasada'],
     msgs: [
       [
         'atendente',
@@ -217,19 +254,29 @@ const seeds: Seed[] = [
 export const mockMensagens: Mensagem[] = []
 
 export const mockConversas: Conversa[] = seeds.map((s) => {
-  const msgs = s.msgs.map(([de, texto, h, tipo = 'texto'], i): Mensagem => ({
-    id: `${s.id}-m${i + 1}`,
-    conversaId: s.id,
-    de,
-    tipo,
-    texto: tipo === 'midia' ? '' : texto,
-    autor: de === 'atendente' ? (s.atendente ?? 'Ana Souza') : null,
-    em: hoursFromNow(h),
-    status: de === 'atendente' && tipo !== 'nota' ? (h < -24 ? 'lida' : 'entregue') : null,
-    midia: tipo === 'midia' ? { nome: texto, tamanho: `${(120 + i * 37) % 900} KB` } : null,
-  }))
+  const msgs = s.msgs.map(([de, texto, h, tipo = 'texto'], i): Mensagem => {
+    const em = hoursFromNow(h)
+    const sistema = de === 'sistema'
+    return {
+      id: `${s.id}-m${i + 1}`,
+      conversaId: s.id,
+      de,
+      tipo,
+      texto: tipo === 'midia' || sistema ? '' : texto,
+      autor: de === 'atendente' ? (s.atendente ?? 'Ana Souza') : null,
+      em,
+      status: de === 'atendente' && tipo !== 'nota' ? (h < -24 ? 'lida' : 'entregue') : null,
+      midia: tipo === 'midia' ? { nome: texto, tamanho: `${(120 + i * 37) % 900} KB` } : null,
+      evento: sistema ? (texto as MensagemEvento) : null,
+      dados: sistema ? { atendente: s.atendente ?? undefined } : null,
+      templateId: tipo === 'template' ? 'tp2' : null,
+      criadoEm: em,
+      atualizadoEm: em,
+    }
+  })
   mockMensagens.push(...msgs)
-  const ultima = msgs[msgs.length - 1]!
+  // a prévia da lista mostra a última mensagem de gente (evento de sistema não vira prévia)
+  const ultima = [...msgs].reverse().find((m) => m.de !== 'sistema') ?? msgs[msgs.length - 1]!
   const ultimaDoContato = [...msgs].reverse().find((m) => m.de === 'contato')
   // não lidas = mensagens do contato depois da última resposta do escritório
   let ultimaResposta = -1
@@ -244,6 +291,7 @@ export const mockConversas: Conversa[] = seeds.map((s) => {
     cliente: s.cliente,
     canalId: s.canalId,
     estado: s.estado,
+    atendenteId: atendenteId(s.atendente),
     atendente: s.atendente,
     ultimaMensagem: ultima.tipo === 'midia' ? `📎 ${ultima.midia?.nome}` : ultima.texto,
     ultimaEm: ultima.em,
@@ -251,6 +299,8 @@ export const mockConversas: Conversa[] = seeds.map((s) => {
     janelaExpiraEm: ultimaDoContato
       ? new Date(new Date(ultimaDoContato.em).getTime() + 24 * 3_600_000).toISOString()
       : null,
-    tags: s.tags ?? [],
+    etiquetas: s.etiquetas ?? [],
+    criadoEm: msgs[0]!.em,
+    atualizadoEm: ultima.em,
   }
 })

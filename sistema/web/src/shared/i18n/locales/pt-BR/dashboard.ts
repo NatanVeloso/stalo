@@ -8,6 +8,7 @@ export const dashboard = {
     receber: 'Honorários a receber',
     vencendo: 'Vencendo em 7 dias',
     vsLastMonth: 'vs. mês anterior',
+    error: 'Não foi possível carregar os indicadores.',
   },
   chart: {
     title: 'Honorários recebidos',
@@ -17,18 +18,24 @@ export const dashboard = {
     chart: 'Ver como gráfico',
     month: 'Mês',
     value: 'Valor',
+    label: '{title}. {subtitle}',
+    empty: 'Nenhum honorário recebido no período.',
   },
   deadlines: {
     title: 'Próximos vencimentos',
     subtitle: 'Obrigações dos próximos 15 dias',
     empty: 'Nenhum vencimento próximo.',
   },
-  activity: { title: 'Atividade recente', subtitle: 'O que a equipe fez por último' },
+  activity: {
+    title: 'Atividade recente',
+    subtitle: 'O que a equipe fez por último',
+    empty: 'Nenhuma atividade registrada ainda.',
+  },
   activityKinds: {
-    entrega: '{user} entregou {what} de {client}',
-    documento: '{user} anexou {what} em {client}',
-    cliente: '{user} cadastrou {client}',
-    pagamento: '{client} pagou {what}',
-    usuario: '{user} convidou {what}',
+    entrega: '{usuario} entregou {descricao} de {cliente}',
+    documento: '{usuario} anexou {descricao} em {cliente}',
+    cliente: '{usuario} cadastrou {cliente}',
+    pagamento: '{cliente} pagou {descricao}',
+    usuario: '{usuario} convidou {descricao}',
   },
 }

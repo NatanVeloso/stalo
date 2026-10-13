@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import { AppShell } from '@/shared/layout'
 import { RequireAuth, RequirePermission, RedirectIfAuthenticated } from '@/shared/auth'
-import { NotFoundPage } from '@/shared/ui'
+import { ErrorFallback, NotFoundPage } from '@/shared/ui'
 import { LoginPage } from '@/features/auth'
 import { DashboardPage } from '@/features/dashboard'
 import { ClientesPage } from '@/features/clientes'
@@ -26,6 +26,8 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <AppShell />,
+        // erro de render numa página: a casca continua de pé e o usuário pode recarregar
+        errorElement: <ErrorFallback retry={() => window.location.reload()} />,
         children: [
           {
             element: <RequirePermission permission="dashboard:ver" />,

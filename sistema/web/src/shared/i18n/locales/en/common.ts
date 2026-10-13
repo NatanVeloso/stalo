@@ -3,6 +3,7 @@ import type { Dictionary } from '../pt-BR'
 export const common: Dictionary['common'] = {
   app: 'Stalo',
   brand: 'Stalo Consulting',
+  navLabel: 'Main menu',
   nav: {
     dashboard: 'Overview',
     clientes: 'Clients',
@@ -14,10 +15,13 @@ export const common: Dictionary['common'] = {
     sections: { operacao: 'Operations', gestao: 'Management' },
   },
   actions: {
+    searchShortcut: 'Ctrl K',
     search: 'Search',
     searchPlaceholder: 'Search...',
     filter: 'Filter',
     clear: 'Clear',
+    scrollLeft: 'See previous',
+    scrollRight: 'See more',
     save: 'Save',
     cancel: 'Cancel',
     close: 'Close',
@@ -34,6 +38,7 @@ export const common: Dictionary['common'] = {
     retry: 'Try again',
   },
   table: {
+    actions: 'Actions',
     empty: 'Nothing here',
     emptyHint: 'No records match the filters.',
     rowsPerPage: 'Rows per page',
@@ -73,13 +78,28 @@ export const common: Dictionary['common'] = {
     toggle: 'Toggle theme',
   },
   fontSize: { label: 'Font size', sm: 'Small', md: 'Medium', lg: 'Large' },
-  density: { label: 'Density', comfortable: 'Comfortable', compact: 'Compact' },
+  density: { label: 'Density', comfortable: 'Comfortable', medium: 'Medium', compact: 'Compact' },
   language: 'Language',
+  languageCurrent: 'Language: {name}',
   user: {
     profile: 'My profile',
     loggedAs: 'Signed in as',
   },
   errors: {
+    loadTitle: "Couldn't load",
+    loadHint: 'Check your connection and try again.',
+    actionFailed: "Couldn't complete the action.",
+    codes: {
+      'auth/invalid-credentials': 'Incorrect email or password.',
+      'auth/locked': 'Too many attempts. Try again in 15 minutes.',
+      'auth/no-session': 'Your session expired. Sign in again.',
+      'auth/forbidden': "Your role isn't allowed to do this.",
+      'validation/invalid-body': 'Check the fields and try again.',
+      'resource/not-found': 'The record was not found.',
+      'resource/conflict': 'A record with this data already exists.',
+      'rate-limit/exceeded': 'Too many requests. Wait a moment.',
+      'internal/error': 'Server error. Try again shortly.',
+    },
     title: 'Something went wrong',
     generic: 'Could not load. Please try again.',
     forbiddenTitle: 'No access',
@@ -88,6 +108,8 @@ export const common: Dictionary['common'] = {
     notFound: 'This address does not exist or was moved.',
     goHome: 'Go to overview',
   },
+  /** Campo sem valor (data nunca preenchida, por exemplo). */
+  noValue: '—',
   mockBadge: 'Demo data',
   loading: 'Loading',
   yesterday: 'Yesterday',

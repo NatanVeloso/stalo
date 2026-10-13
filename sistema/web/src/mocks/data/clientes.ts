@@ -1,7 +1,9 @@
 import type { Cliente } from '@/features/clientes'
 import { daysFromNow } from '../util'
 
-export const mockClientes: Cliente[] = [
+type Seed = Omit<Cliente, 'criadoEm' | 'atualizadoEm'>
+
+const seeds: Seed[] = [
   {
     id: 'c1',
     razaoSocial: 'Supriloc Locações Ltda',
@@ -255,3 +257,10 @@ export const mockClientes: Cliente[] = [
     ultimaEntrega: daysFromNow(-140),
   },
 ]
+
+// criado no dia em que virou cliente; atualizado na última entrega (ou na criação)
+export const mockClientes: Cliente[] = seeds.map((c) => ({
+  ...c,
+  criadoEm: `${c.desde}T12:00:00.000Z`,
+  atualizadoEm: `${c.ultimaEntrega ?? c.desde}T12:00:00.000Z`,
+}))

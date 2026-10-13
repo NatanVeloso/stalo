@@ -10,6 +10,8 @@ export const dashboardKeys = {
   atividades: () => [...dashboardKeys.all, 'atividades'] as const,
 }
 
+// Os hooks de receita e vencimentos só são chamados por componentes montados com a permissão
+// do endpoint (`financeiro:ver`, `obrigacoes:ver`): sem ela a API responde 403.
 export const useResumo = () => useQuery({ queryKey: dashboardKeys.resumo(), queryFn: dashboardApi.resumo })
 export const useReceitaMensal = () =>
   useQuery({ queryKey: dashboardKeys.receita(), queryFn: dashboardApi.receitaMensal })

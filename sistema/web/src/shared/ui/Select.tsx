@@ -1,4 +1,5 @@
 import * as RadixSelect from '@radix-ui/react-select'
+import { forwardRef } from 'react'
 import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 
@@ -27,30 +28,24 @@ const fromRadix = (v: string) => (v === EMPTY ? '' : v)
 /**
  * Select (Radix): mesma cara do `Input`, lista em vidro, navegação por teclado e
  * busca por digitação. Use com `Field` quando tiver rótulo visível. Para muitas
- * opções com busca por texto, criar um `Combobox`.
+ * opções com busca por texto, criar um `Combobox`. O `ref` vai para o gatilho (react-hook-form
+ * usa para focar o campo com erro).
  */
-export function Select({
-  value,
-  onChange,
-  options,
-  placeholder,
-  size = 'md',
-  invalid,
-  disabled,
-  id,
-  className,
-  ...aria
-}: Props) {
+export const Select = forwardRef<HTMLButtonElement, Props>(function Select(
+  { value, onChange, options, placeholder, size = 'md', invalid, disabled, id, className, ...aria },
+  ref,
+) {
   return (
     <RadixSelect.Root value={toRadix(value)} onValueChange={(v) => onChange(fromRadix(v))} disabled={disabled}>
       <RadixSelect.Trigger
+        ref={ref}
         id={id}
         aria-label={aria['aria-label']}
         aria-describedby={aria['aria-describedby']}
         aria-invalid={invalid || undefined}
         className={cn(
-          'flex w-full items-center justify-between gap-2 rounded-2xl border border-line bg-fg/[0.03] px-4 text-left text-sm text-fg transition-[border-color,background-color] duration-200 outline-none hover:border-line-strong focus-visible:border-line-strong disabled:opacity-50 data-[placeholder]:text-fg-subtle data-[state=open]:border-line-strong',
-          size === 'sm' ? 'h-9 rounded-xl px-3 text-[13px]' : 'h-11',
+          'flex w-full items-center justify-between gap-2 rounded-2xl px-4 text-left text-sm text-fg glass-field transition-[border-color,box-shadow] duration-200 outline-none hover:border-line-strong focus-visible:border-line-strong disabled:opacity-50 data-[placeholder]:text-fg-subtle data-[state=open]:border-line-strong',
+          size === 'sm' ? 'h-9 px-3 text-small' : 'h-11',
           invalid && 'border-danger/60',
           className,
         )}
@@ -71,7 +66,7 @@ export function Select({
           position="popper"
           sideOffset={6}
           collisionPadding={8}
-          className="data-[state=open]:animate-rise z-50 max-h-(--radix-select-content-available-height) min-w-(--radix-select-trigger-width) overflow-hidden rounded-2xl p-1.5 glass-strong"
+          className="data-[state=open]:animate-rise z-50 max-h-(--radix-select-content-available-height) min-w-(--radix-select-trigger-width) glass-strong overflow-hidden rounded-2xl p-1.5"
         >
           <RadixSelect.Viewport className="flex flex-col gap-0.5">
             {options.map((o) => (
@@ -79,7 +74,7 @@ export function Select({
                 key={o.value}
                 value={toRadix(o.value)}
                 disabled={o.disabled}
-                className="flex cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm text-fg-muted outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-fg/[0.06] data-[highlighted]:text-fg data-[state=checked]:text-fg"
+                className="flex cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-(--list-y) text-sm text-fg-muted outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-fg/[0.06] data-[highlighted]:text-fg data-[state=checked]:text-fg"
               >
                 <RadixSelect.ItemText>{o.label}</RadixSelect.ItemText>
                 <RadixSelect.ItemIndicator>
@@ -92,4 +87,4 @@ export function Select({
       </RadixSelect.Portal>
     </RadixSelect.Root>
   )
-}
+})

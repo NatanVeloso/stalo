@@ -7,8 +7,9 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   trailing?: ReactNode
 }
 
-export const inputClass =
-  'h-11 w-full rounded-2xl border border-line bg-fg/[0.03] px-4 text-sm text-fg placeholder:text-fg-subtle transition-[border-color,background-color] duration-200 hover:border-line-strong focus:border-line-strong focus:bg-fg/[0.05] focus:outline-none disabled:opacity-50'
+// fica neste arquivo e sem export: só o Input usa (react-refresh exige que .tsx exporte só componente)
+const inputClass =
+  'h-11 w-full rounded-2xl px-4 text-sm text-fg placeholder:text-fg-subtle transition-[border-color,box-shadow] duration-200 glass-field hover:border-line-strong focus:border-line-strong focus:outline-none disabled:opacity-50'
 
 export const Input = forwardRef<HTMLInputElement, Props>(function Input(
   { invalid, leading, trailing, className, ...rest },

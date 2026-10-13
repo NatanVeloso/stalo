@@ -1,8 +1,10 @@
 import type { Usuario } from '@/features/usuarios'
 import { hoursFromNow } from '../util'
 
+type SemDatas = Omit<Usuario, 'criadoEm' | 'atualizadoEm'>
+
 /** Senha de todos na demo: 123456 */
-export const mockUsers: Usuario[] = [
+const usuarios: SemDatas[] = [
   {
     id: 'u1',
     nome: 'Ana Souza',
@@ -60,3 +62,9 @@ export const mockUsers: Usuario[] = [
     ultimoAcesso: null,
   },
 ]
+
+// cadastro espaçado em meses; a atualização é o último acesso (ou o próprio cadastro)
+export const mockUsers: Usuario[] = usuarios.map((u, i) => {
+  const criadoEm = hoursFromNow(-24 * (400 - i * 45))
+  return { ...u, criadoEm, atualizadoEm: u.ultimoAcesso ?? criadoEm }
+})

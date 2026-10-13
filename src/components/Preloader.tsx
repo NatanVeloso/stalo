@@ -94,7 +94,9 @@ export function Preloader({ onDone }: Props) {
   )
 
   return (
-    <div ref={root} className="fixed inset-0 z-[100] flex items-center justify-center bg-ink text-fog">
+    // w-screen (100vw), não inset-0: com a barra de rolagem surgindo no meio da abertura, a área
+    // útil encolhia e o logo centralizado saltava para a esquerda — ver #boot no index.html
+    <div ref={root} className="fixed left-0 top-0 z-[100] flex h-full w-screen items-center justify-center bg-ink text-fog">
       {!skip && <Logo className="content h-14 w-auto md:h-16" />}
     </div>
   )

@@ -5,7 +5,10 @@ import App from './App'
 import { LegalPage } from './components/LegalPage'
 import { BlogPage } from './components/BlogPage'
 import { PostPage } from './components/PostPage'
+import { AboutPage } from './components/AboutPage'
+import { TeamPage } from './components/TeamPage'
 import { applyDocumentMeta, page } from './i18n'
+import { stashHash } from './lib/hash'
 import { initPerf, watchPerf } from './lib/perf'
 import { initPixel } from './lib/pixel'
 import { fetchHomePosts } from './lib/posts'
@@ -14,6 +17,8 @@ import { fetchHomePosts } from './lib/posts'
 initPerf()
 applyDocumentMeta()
 initPixel()
+// Âncora na URL da home: guardada e tirada ANTES do primeiro render, para o salto nativo não rolar a página (ver lib/hash.ts).
+if (page.kind === 'home') stashHash()
 
 // Roteamento mínimo por caminho, resolvido em src/i18n junto com o idioma: as
 // páginas legais e o blog são páginas estáticas; qualquer outro caminho cai no
@@ -26,6 +31,10 @@ const root =
     <BlogPage />
   ) : page.kind === 'post' ? (
     <PostPage slug={page.slug} />
+  ) : page.kind === 'sobre' ? (
+    <AboutPage />
+  ) : page.kind === 'equipe' ? (
+    <TeamPage />
   ) : (
     <App posts={await fetchHomePosts()} />
   )

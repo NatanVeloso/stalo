@@ -1,7 +1,7 @@
 import { useRef, useState, type MouseEvent } from 'react'
 import { gsap, useGSAP, ScrollTrigger, ScrollSmoother } from '../lib/gsap'
 import { nav, contact } from '../data/content'
-import { blogHref, t } from '../i18n'
+import { blogHref, homeHref, page, t } from '../i18n'
 import { useLiquidGlass } from '../hooks/useLiquidGlass'
 import { Logo } from './Logo'
 import { CursorGlow } from './CursorGlow'
@@ -9,11 +9,23 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 
 type Props = { show: boolean }
 
-/** Rola até uma âncora usando o ScrollSmoother (ou nativo, se ele não existir). */
-export function scrollToAnchor(href: string) {
+/** O mesmo header serve a home e as páginas (/sobre, /equipe, /blog). Fora da home as âncoras levam à home. */
+const onHome = page.kind === 'home'
+const linkHref = (href: string) => (href.startsWith('#') && !onHome ? homeHref() + href : href)
+/** Fora da home o link ativo é o da própria página (o blog também marca /blog/:slug). */
+const currentPage = onHome
+  ? ''
+  : (nav.find(({ href }) => !href.startsWith('#') && (location.pathname === href || location.pathname.startsWith(href + '/')))?.href ?? '')
+
+/**
+ * Rola até uma âncora usando o ScrollSmoother (ou nativo, se ele não existir).
+ * `smooth: false` pula direto: é o caso de chegar na home já com #ancora, em que
+ * uma rolagem animada seria cancelada pelos refreshes do ScrollTrigger logo após o preloader.
+ */
+export function scrollToAnchor(href: string, smooth = true) {
   const smoother = ScrollSmoother.get()
-  if (smoother) smoother.scrollTo(href, true, 'top top')
-  else document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+  if (smoother) smoother.scrollTo(href, smooth, 'top top')
+  else document.querySelector(href)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' })
 }
 
 export function Header({ show }: Props) {
@@ -21,7 +33,7 @@ export function Header({ show }: Props) {
   const pill = useRef<HTMLElement>(null)
   const menu = useRef<HTMLDivElement>(null)
   const glass = useLiquidGlass(pill)
-  const [active, setActive] = useState('')
+  const [active, setActive] = useState(currentPage)
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -41,6 +53,7 @@ export function Header({ show }: Props) {
       end: 'max',
       onToggle: (self) => setScrolled(self.isActive),
     })
+    if (!onHome) return
     // âncoras da própria página e o link do blog (página /blog), que aqui acompanha a section #blog
     nav.forEach(({ href }) => {
       const target = href.startsWith('#') ? href : href === blogHref() ? '#blog' : null
@@ -133,17 +146,17 @@ export function Header({ show }: Props) {
               <div className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-[linear-gradient(120deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0)_30%,rgba(255,255,255,0)_70%,rgba(255,255,255,0.1)_100%)]" />
             </>
           )}
-          <a href="#top" onClick={(e) => go(e, '#top')} className="flex items-center text-fog" aria-label={t.common.home}>
+          <a href={onHome ? '#top' : homeHref()} onClick={(e) => go(e, onHome ? '#top' : homeHref())} className="flex items-center text-fog" aria-label={t.common.home}>
             <Logo className="h-[26px] w-auto" />
           </a>
 
           {/* entre md e lg os 5 links dividem a pílula com o CTA: fonte e espaçamento menores para caber numa linha */}
-          <div className="hidden items-center gap-3 text-[13px] md:flex lg:gap-6 lg:text-[15px]">
+          <div className="hidden items-center gap-2 text-[13px] md:flex lg:gap-6 lg:text-[15px]">
             {nav.map(({ label, href }) => (
               <a
                 key={href}
-                href={href}
-                onClick={(e) => go(e, href)}
+                href={linkHref(href)}
+                onClick={(e) => go(e, linkHref(href))}
                 className={`relative whitespace-nowrap rounded-md py-1 outline-none transition-colors duration-300 hover:text-sky focus-visible:text-sky focus-visible:ring-1 focus-visible:ring-sky/60 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent ${
                   active === href ? 'text-fog' : 'text-fog/75'
                 }`}
@@ -193,8 +206,8 @@ export function Header({ show }: Props) {
         {nav.map(({ label, href }) => (
           <a
             key={href}
-            href={href}
-            onClick={(e) => go(e, href)}
+            href={linkHref(href)}
+            onClick={(e) => go(e, linkHref(href))}
             className="menu-link text-[clamp(32px,9vw,44px)] font-medium tracking-[-0.03em] text-fog"
           >
             {label}

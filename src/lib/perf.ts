@@ -81,6 +81,14 @@ export function initPerf(): PerfMode {
   mode = next
   document.documentElement.dataset.perf = next
 
+  // o ?perf= já foi lido e guardado: tira da barra de endereço (sem recarregar)
+  // para não ficar à mostra nem ir junto quando alguém copia o link
+  if (q !== null) {
+    const url = new URL(window.location.href)
+    url.searchParams.delete('perf')
+    window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash)
+  }
+
   // Atalho de suporte/teste no console: staloPerf.set('lite' | 'full' | 'auto')
   ;(window as unknown as { staloPerf: unknown }).staloPerf = {
     get mode() {

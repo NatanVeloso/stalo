@@ -23,6 +23,7 @@ export const en: Dictionary = {
   nav: {
     services: 'Services',
     about: 'About',
+    team: 'Team',
     process: 'How it works',
     faq: 'FAQ',
     blog: 'Blog',
@@ -87,6 +88,7 @@ export const en: Dictionary = {
 
   about: {
     eyebrow: 'About Stalo',
+    more: 'Read our story',
     title: 'An accountant who knows your business',
     accent: 'by name.',
     lead: 'We work side by side with business owners, turning tax obligations into information you can use to decide. Every client has a dedicated contact, with no queues and no generic answers.',
@@ -236,6 +238,8 @@ export const en: Dictionary = {
       contact: 'Contact',
       faq: 'FAQ',
       blog: 'Blog',
+      about: 'About us',
+      team: 'Team',
     },
   },
 
@@ -256,6 +260,7 @@ export const en: Dictionary = {
   },
 
   blog: {
+    morePosts: 'More posts',
     eyebrow: 'Blog',
     pageTitle: 'Blog',
     title: 'Straight from our',
@@ -276,6 +281,70 @@ export const en: Dictionary = {
     likes: 'likes',
     comments: 'comments',
     originalLanguage: 'Original post in Portuguese.',
+  },
+
+  aboutPage: {
+    pageTitle: 'About us',
+    title: 'Accounting for leaders who',
+    accent: 'want to decide better.',
+    lead: 'Since 2018, in Goiânia, we turn tax obligations into clear information for the people who run a company.',
+    primaryCta: 'Meet the team',
+    founded: 'Founded on May 30, 2018, in Goiânia, Brazil.',
+    years: '{anos} years supporting companies that grow.',
+    storyTitle: 'Accounting that',
+    storyAccent: 'explains the numbers.',
+    story: [
+      'Stalo was born from one conviction: business owners need to understand their own numbers, not just receive them at the end of the month.',
+      'That is why every client has a dedicated contact who knows the operation, anticipates deadlines and turns reports into decisions. Digital processes take care of the rest.',
+      'This is how we serve retail, services, technology, healthcare and manufacturing: with technical rigor, closeness and business vision.',
+    ],
+    missionLabel: 'Mission',
+    mission: 'To bring clarity and confidence to our clients\' decisions through precise, close and growth-oriented accounting.',
+    visionLabel: 'Vision',
+    vision: 'To be recognized as the reference in advisory accounting for growing companies in Brazil.',
+    valuesTitle: 'What guides',
+    valuesAccent: 'every delivery.',
+    values: [
+      { title: 'Clarity', text: 'A number without an explanation helps no one. Every report comes with what it means for your company.' },
+      { title: 'Closeness', text: 'A dedicated contact who knows your business by name and answers without a queue.' },
+      { title: 'Technical rigor', text: 'Deadlines met, obligations up to date and every entry double-checked.' },
+      { title: 'Ethics', text: 'Tax planning within the law, with transparency about risks and costs.' },
+      { title: 'Ownership', text: 'We look after each client\'s company with the same care and ambition as the people who founded it.' },
+    ],
+    placeTitle: 'Where we are',
+    placeMap: 'View on map',
+    ctaTitle: 'Shall we talk about your company?',
+    ctaText: 'A consultant understands where you are and points out the right path, with no commitment.',
+  },
+
+  team: {
+    pageTitle: 'Team',
+    title: 'The people behind',
+    accent: 'your numbers.',
+    lead: 'Specialists in accounting, tax, payroll and finance, working together for every client.',
+    howTitle: 'One dedicated contact.',
+    howAccent: 'A whole team behind them.',
+    how: [
+      { title: 'You talk to one person', text: 'Your contact knows the operation and is your single channel with Stalo.' },
+      { title: 'Specialists by area', text: 'Tax, payroll and finance step in when the subject needs technical depth.' },
+      { title: 'One view of the whole', text: 'Everything comes together in reports and meetings that look at the entire company.' },
+    ],
+    areasTitle: 'Who takes care of',
+    areasAccent: 'each front.',
+    members: [
+      { role: 'Founding partner', area: 'Leadership', text: 'Sets Stalo\'s strategy and closely follows the most complex accounts.' },
+      { role: 'Accounting lead', area: 'Accounting', text: 'Closings, balance sheets and management reports that make sense to decision makers.' },
+      { role: 'Tax lead', area: 'Tax', text: 'Tax calculations, ancillary obligations and tax planning within the law.' },
+      { role: 'Payroll and HR', area: 'People', text: 'Payroll, hiring, terminations and eSocial with no delays and no rework.' },
+      { role: 'Financial BPO', area: 'Finance', text: 'Payables and receivables, reconciliation and cash flow under control.' },
+      { role: 'Client success', area: 'Relationship', text: 'The dedicated contact who knows your operation and follows every delivery.' },
+    ],
+    noPhoto: 'Photo coming soon',
+    joinTitle: 'Want to join us?',
+    joinText: 'We are always happy to meet accountants and analysts who enjoy people and numbers.',
+    joinCta: 'Send your résumé',
+    joinSubject: 'I want to join the Stalo team',
+    aboutCta: 'Our story',
   },
 
   legal: {

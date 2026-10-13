@@ -3,7 +3,7 @@ import { LogOut } from 'lucide-react'
 import { cn } from '@/shared/lib/cn'
 import { useT } from '@/shared/i18n'
 import { can, useAuth } from '@/shared/auth'
-import { Avatar, Logo } from '@/shared/ui'
+import { Avatar, IconButton, Logo } from '@/shared/ui'
 import { navItems } from './nav'
 
 type Props = { onNavigate?: () => void; className?: string }
@@ -21,24 +21,24 @@ export function Sidebar({ onNavigate, className }: Props) {
 
   return (
     <aside
-      className={cn('relative isolate flex h-full flex-col rounded-3xl p-4 glass', className)}
-      aria-label={t.common.nav.dashboard}
+      className={cn('relative isolate flex h-full glass flex-col rounded-3xl p-4', className)}
+      aria-label={t.common.navLabel}
     >
       <span className="glass-sheen -z-10" aria-hidden="true" />
       <NavLink to="/" onClick={onNavigate} className="flex items-center px-2 py-2 text-fg" aria-label={t.common.app}>
         <Logo className="h-6 w-auto" />
       </NavLink>
 
-      <nav className="mt-6 flex flex-1 flex-col gap-5">
+      <nav className="mt-(--stack-y) flex flex-1 flex-col gap-(--stack-y)">
         {sections.map(
           ({ key, items }) =>
             items.length > 0 && (
               <div key={key}>
-                <p className="mb-1.5 px-3 text-[11px] font-semibold tracking-[0.08em] text-fg-subtle uppercase">
+                <p className="mb-1.5 px-3 text-caption font-semibold tracking-[0.08em] text-fg-subtle uppercase">
                   {t.common.nav.sections[key]}
                 </p>
                 <ul className="flex flex-col gap-0.5">
-                  {items.map(({ to, icon: Icon, label }) => (
+                  {items.map(({ to, icon: Icon, label, activeColor }) => (
                     <li key={to}>
                       <NavLink
                         to={to}
@@ -47,14 +47,19 @@ export function Sidebar({ onNavigate, className }: Props) {
                         className={({ isActive }) =>
                           cn(
                             'flex items-center gap-3 rounded-2xl px-3 py-(--nav-y) text-sm font-medium transition-colors duration-200',
-                            isActive
-                              ? 'bg-accent text-accent-fg shadow-[0_8px_24px_-10px_rgba(0,0,0,0.5)]'
-                              : 'text-fg-muted hover:bg-fg/[0.06] hover:text-fg',
+                            isActive ? 'text-fg glass-inset' : 'text-fg-muted hover:bg-fg/[0.06] hover:text-fg',
                           )
                         }
                       >
-                        <Icon className="size-[18px]" aria-hidden="true" />
-                        {t.common.nav[label]}
+                        {({ isActive }) => (
+                          <>
+                            <Icon
+                              className={cn('size-[1.125rem] transition-colors duration-200', isActive && activeColor)}
+                              aria-hidden="true"
+                            />
+                            {t.common.nav[label]}
+                          </>
+                        )}
                       </NavLink>
                     </li>
                   ))}
@@ -65,21 +70,15 @@ export function Sidebar({ onNavigate, className }: Props) {
       </nav>
 
       {user && (
-        <div className="mt-4 flex items-center gap-3 rounded-2xl border border-line p-2.5">
+        <div className="mt-4 flex items-center gap-3 rounded-2xl p-2.5 glass-inset">
           <Avatar name={user.nome} size="sm" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[13px] font-medium">{user.nome}</p>
-            <p className="truncate text-[11px] text-fg-subtle">{t.common.roles[user.role]}</p>
+            <p className="truncate text-small font-medium">{user.nome}</p>
+            <p className="truncate text-caption text-fg-subtle">{t.common.roles[user.role]}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => void logout()}
-            aria-label={t.common.actions.logout}
-            title={t.common.actions.logout}
-            className="rounded-full p-1.5 text-fg-subtle transition-colors hover:bg-fg/[0.06] hover:text-fg"
-          >
-            <LogOut className="size-4" />
-          </button>
+          <IconButton size="sm" label={t.common.actions.logout} onClick={() => void logout()}>
+            <LogOut />
+          </IconButton>
         </div>
       )}
     </aside>
